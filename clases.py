@@ -9,7 +9,7 @@ class Vertice:
         self.grado= self.grado + 1
 
     def __str__(self):
-        return str(self.id) + ' conectadoA: ' + str([x.id for x in self.conectadoA])
+        return str(self.id) + ' conectado a: ' + str([x.id for x in self.conectadoA])
     
     def obtenerGrado(self):
         return self.grado
@@ -51,19 +51,28 @@ class Grafica:
         self.listaVertices[clave]= nuevoVertice
         return nuevoVertice
 
+    def agregarArista(self, de, a, costo= 0):
+        self.numAristas= self.numAristas + 1
+        if de not in self.listaVertices:
+            nv= self.agregarVertice(de)
+        if a not in self.listaVertices:
+            nv= self.agregarVertice(a)
+        self.listaVertices[de].agregarVecino(self.listaVertices[a], costo)
+        self.listaVertices[a].agregarVecino(self.listaVertices[de], costo)
+
     def gradoVertice(self, clave):
         if clave in self.listaVertices:
             return self.listaVertices[clave].obtenerGrado()
         else:
             return None
 
-    def obtenerVertice(self, n):
+    def buscarVertice(self, n):
         if n in self.listaVertices:
             return self.listaVertices[n]
         else:
             return None
 
-    def obtenerArista(self, inicio, destino):
+    def buscarArista(self, inicio, destino):
         if (inicio in self.listaVertices) and (destino in self.listaVertices):
             if self.listaVertices[inicio].obtenerVecino(destino):
                 return True
@@ -84,16 +93,6 @@ class Grafica:
 
     def __contains__(self, n):
         return n in self.listaVertices
-
-    def agregarArista(self, de, a, costo= 0):
-        self.numAristas= self.numAristas + 1
-        if de not in self.listaVertices:
-            nv= self.agregarVertice(de)
-        if a not in self.listaVertices:
-            nv= self.agregarVertice(a)
-        self.listaVertices[de].agregarVecino(self.listaVertices[a], costo)
-        self.listaVertices[a].agregarVecino(self.listaVertices[de], costo)
-        
 
     def eliminarArista(self, inicio, destino):
         if (inicio in self.listaVertices) and (destino in self.listaVertices):
