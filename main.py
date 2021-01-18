@@ -56,8 +56,8 @@ def menu(grafica):
     sub_opcion = -1
 
     while (opcion != 0):
-        os.system("clear") # LINUX
-        #os.system("cls") # WINDOWS
+        #os.system("clear") # LINUX
+        os.system("cls") # WINDOWS
 
         print("\n-------------------------- MENÚ --------------------------")
         print("1) Agregar")
@@ -70,7 +70,7 @@ def menu(grafica):
         print("-------------------------- GRAFICA --------------------------")
 
         for v in grafica:
-            if v: 
+            if v:
                 print(v.__str__())
 
         while opcion not in range(7):
@@ -104,8 +104,8 @@ def menu_agregar(grafica):
     sub_opcion = -1
 
     while (sub_opcion != 0):
-        os.system("clear") # LINUX
-        #os.system("cls") # WINDOWS
+        #os.system("clear") # LINUX
+        os.system("cls") # WINDOWS
 
         print("1) Agregar Nodo")
         print("2) Agregar Arista")
@@ -119,8 +119,10 @@ def menu_agregar(grafica):
         if sub_opcion == 1:
             # Función agregar Nodo (Pedir id)
             id= input("Introduce el identificador del nodo: ")
-            grafica.agregarVertice(id)
-            print("Se agrego el nodo correctamente")
+            if (grafica.agregarVertice(id)):
+                print("Se agrego el nodo correctamente")
+            else:
+                print("Ya existe un nodo con ese identificador")
             input("Presione una tecla para continuar...")
             sub_opcion = -1
         elif sub_opcion == 2:
@@ -139,8 +141,8 @@ def menu_eliminar(grafica):
     sub_opcion = -1
 
     while (sub_opcion != 0):
-        os.system("clear") # LINUX
-        #os.system("cls") # WINDOWS
+        #os.system("clear") # LINUX
+        os.system("cls") # WINDOWS
 
         print("1) Eliminar Nodo")
         print("2) Eliminar Arista")
@@ -183,7 +185,7 @@ def menu_buscar(grafica):
 
     while (sub_opcion != 0):
         #os.system("clear") # LINUX
-        #os.system("cls") # WINDOWS
+        os.system("cls") # WINDOWS
 
         print("1) Buscar Nodo")
         print("2) Buscar Arista")
@@ -201,7 +203,7 @@ def menu_buscar(grafica):
             if nodo:
                 print(nodo.__str__())
                 input("Presione una tecla para continuar...")
-            else: 
+            else:
                 print("No existe ese nodo en Ba Sing se")
                 input("Presione una tecla para continuar...")
             print("Buscar nodo")
@@ -222,15 +224,15 @@ def menu_buscar(grafica):
     return
 
 def menu_grado(grafica):
-    os.system("clear") # LINUX
-    #os.system("cls") # WINDOWS
+    #os.system("clear") # LINUX
+    os.system("cls") # WINDOWS
 
     # Función obtener grado de un Nodo
     id= input("Introduce el id del nodo: ")
     if grafica.gradoVertice(id):
-        print("El grado del nodo %s es: %s"%(id, grafica.gradoVertice(id)))    
-    else: 
-        print("No existe ese nodo en Ba Sing se"))
+        print("El grado del nodo %s es: %s"%(id, grafica.gradoVertice(id)))
+    else:
+        print("No existe ese nodo en Ba Sing se")
     input("Presione una tecla para continuar...")
 
     return
@@ -240,8 +242,8 @@ def menu_total(grafica):
     sub_opcion = -1
 
     while (sub_opcion != 0):
-        os.system("clear") # LINUX
-        #os.system("cls") # WINDOWS
+        #os.system("clear") # LINUX
+        os.system("cls") # WINDOWS
 
         print("1) Total de Nodos")
         print("2) Total de Aristas")
@@ -273,8 +275,8 @@ def menu_vaciar(grafica):
     warning_op = ''
 
     while (sub_opcion != 0):
-        os.system("clear") # LINUX
-        #os.system("cls") # WINDOWS
+        #os.system("clear") # LINUX
+        os.system("cls") # WINDOWS
 
         print("1) Vaciar Nodo")
         print("2) Vaciar Grafica")
