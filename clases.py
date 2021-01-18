@@ -1,15 +1,19 @@
+from collections import defaultdict
+
 class Vertice:
     def __init__(self, clave):
         self.id= clave
         self.grado= 0
         self.conectadoA= {}
+        self.listaVecinos= []
     
     def agregarVecino(self, vecino, ponderacion=0):
         self.conectadoA[vecino]= ponderacion
-        self.grado= self.grado + 1
+        self.grado= self.grado+ 1
+        self.listaVecinos.append(vecino.id)
 
     def __str__(self):
-        return str(self.id) + ' conectado a: ' + str([x.id for x in self.conectadoA])
+        return str(self.id) + ' conectado a: ' + str([x for x in self.listaVecinos])
     
     def obtenerGrado(self):
         return self.grado
@@ -30,14 +34,20 @@ class Vertice:
         return self.conectadoA[vecino]
 
     def eliminarVecino(self, clave):
-        for n in self.conectadoA:
-            if n.id == clave:
-                del self.conectadoA[n]
-                self.grado= self.grado - 1
-                return
+        self.listaVecinos.remove(clave)
+        self.grado= self.grado- 1
+        if clave in self.listaVecinos:
+            return
+        else:
+            for n in self.conectadoA:
+                if n.id == clave:
+                    del self.conectadoA[n]
+                    return
 
     def vaciar(self):
         self.conectadoA= {}
+        self.listaVecinos= []
+        self.grado= 0
         
 class Grafica:
     def __init__(self):
@@ -46,10 +56,13 @@ class Grafica:
         self.numAristas= 0
     
     def agregarVertice(self, clave):
-        self.numVertices= self.numVertices + 1
-        nuevoVertice= Vertice(clave)
-        self.listaVertices[clave]= nuevoVertice
-        return nuevoVertice
+        if clave not in self.listaVertices:        
+            self.numVertices= self.numVertices + 1
+            nuevoVertice= Vertice(clave)
+            self.listaVertices[clave]= nuevoVertice
+            return nuevoVertice
+        else:
+            return None
 
     def agregarArista(self, de, a, costo= 0):
         self.numAristas= self.numAristas + 1
@@ -57,8 +70,12 @@ class Grafica:
             nv= self.agregarVertice(de)
         if a not in self.listaVertices:
             nv= self.agregarVertice(a)
-        self.listaVertices[de].agregarVecino(self.listaVertices[a], costo)
-        self.listaVertices[a].agregarVecino(self.listaVertices[de], costo)
+        if a == de:
+            self.listaVertices[de].agregarVecino(self.listaVertices[a], costo)
+            self.listaVertices[de].grado= self.listaVertices[de].grado + 1
+        else:
+            self.listaVertices[de].agregarVecino(self.listaVertices[a], costo)
+            self.listaVertices[a].agregarVecino(self.listaVertices[de], costo)
 
     def gradoVertice(self, clave):
         if clave in self.listaVertices:
@@ -98,8 +115,12 @@ class Grafica:
         if (inicio in self.listaVertices) and (destino in self.listaVertices):
             if self.listaVertices[inicio].obtenerVecino(destino):
                 self.numAristas= self.numAristas - 1
-                self.listaVertices[inicio].eliminarVecino(destino)
-                self.listaVertices[destino].eliminarVecino(inicio)
+                if inicio == destino:
+                    self.listaVertices[inicio].eliminarVecino(destino)
+                    self.listaVertices[inicio].grado= self.listaVertices[inicio].grado - 1
+                else: 
+                    self.listaVertices[inicio].eliminarVecino(destino)
+                    self.listaVertices[destino].eliminarVecino(inicio)
                 return True
             else:
                 return False
@@ -107,16 +128,9 @@ class Grafica:
             return False
 
     def eliminarVertice(self, n):
-        self.numVertices= self.numVertices - 1
-        del self.listaVertices[n]
-        for v in self.listaVertices:
-            if self.listaVertices[v].obtenerVecino(n):
-                self.listaVertices[v].eliminarVecino(n)
-                self.numAristas= self.numAristas - 1
-        
-    def vaciarVertice(self, n):
         if n in self.listaVertices:
-            self.listaVertices[n].vaciar()
+            self.numVertices= self.numVertices - 1
+            del self.listaVertices[n]
             for v in self.listaVertices:
                 if self.listaVertices[v].obtenerVecino(n):
                     self.listaVertices[v].eliminarVecino(n)
@@ -125,7 +139,23 @@ class Grafica:
         else:
             return False
 
-    def vacairGrafica(self):    
+        
+    def vaciarVertice(self, n):
+        if n in self.listaVertices:
+            # aristas_v= len(self.listaVertices[n].listaVecinos)
+            # self.numAristas= self.numAristas - aristas_v
+            for v in self.listaVertices:
+                if self.listaVertices[v].obtenerVecino(n):
+                    while n in self.listaVertices[v].listaVecinos:
+                        self.listaVertices[v].eliminarVecino(n)
+                        self.numAristas= self.numAristas - 1
+
+            self.listaVertices[n].vaciar()
+            return True
+        else:
+            return False
+
+    def vaciarGrafica(self):    
         self.listaVertices.clear()
         self.numAristas= 0
         self.numVertices= 0

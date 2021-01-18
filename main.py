@@ -39,7 +39,6 @@ from clases import Grafica
 #nx.draw(G, with_labels=True, node_size=1500, node_color="skyblue", node_shape="o", alpha=0.5, linewidths=4, font_size=25, font_color="grey", font_weight="bold", width=2, edge_color="grey")
 #plt.show()
 
-
 def pedirOpcion():
     correcto= False
     num= -1
@@ -68,9 +67,11 @@ def menu(grafica):
         print("5) Número total")
         print("6) Vaciar")
         print("0) Salir")
-        print("\n-------------------------- GRAFICA --------------------------")
+        print("-------------------------- GRAFICA --------------------------")
+
         for v in grafica:
-            print(v.__str__())
+            if v: 
+                print(v.__str__())
 
         while opcion not in range(7):
             opcion= pedirOpcion()
@@ -119,14 +120,16 @@ def menu_agregar(grafica):
             # Función agregar Nodo (Pedir id)
             id= input("Introduce el identificador del nodo: ")
             grafica.agregarVertice(id)
-            print("Agregar nodo")
+            print("Se agrego el nodo correctamente")
+            input("Presione una tecla para continuar...")
             sub_opcion = -1
         elif sub_opcion == 2:
             # Función agregar Nodo (Pedir id)
             inicio= input("Introduce el id del nodo de inicio: ")
             destino= input("Introduce el id del nodo del destino: ")
             grafica.agregarArista(inicio, destino)
-            print("Agregar arista")
+            print("Se agrego la arista correctamente")
+            input("Presione una tecla para continuar...")
             sub_opcion = -1
 
     return
@@ -151,14 +154,24 @@ def menu_eliminar(grafica):
         if sub_opcion == 1:
             # Función eliminar Nodo (Pedir id)
             id= input("Introduce el identificador del nodo que desea borrar: ")
-            grafica.eliminarVertice(id)
+            if grafica.eliminarVertice(id):
+                print("El nodo se elimino correctamente")
+                input("Presione una tecla para continuar...")
+            else:
+                print("No existe ese nodo en Ba Sing se")
+                input("Presione una tecla para continuar...")
             print("Eliminar nodo")
             sub_opcion = -1
         elif sub_opcion == 2:
             # Función eliminar Nodo (Pedir id)
             inicio= input("Introduce el id del nodo de inicio: ")
             destino= input("Introduce el id del nodo del destino: ")
-            grafica.eliminarArista(inicio, destino)
+            if grafica.eliminarArista(inicio, destino):
+                print("Se elimino la arista correctamente")
+                input("Presione una tecla para continuar...")
+            else:
+                print("No existe esa arista en Ba Sing se")
+                input("Presione una tecla para continuar...")
             print("Eliminar arista")
             sub_opcion = -1
 
@@ -187,10 +200,10 @@ def menu_buscar(grafica):
             nodo= g.buscarVertice(id)
             if nodo:
                 print(nodo.__str__())
-                input()
+                input("Presione una tecla para continuar...")
             else: 
                 print("No existe ese nodo en Ba Sing se")
-                input()
+                input("Presione una tecla para continuar...")
             print("Buscar nodo")
             sub_opcion = -1
         elif sub_opcion == 2:
@@ -200,10 +213,10 @@ def menu_buscar(grafica):
             destino= input("Introduce el id del nodo del destino: ")
             if grafica.buscarArista(inicio, destino):
                 print ("Existe la arista entre %s y %s"%(inicio, destino))
-                input()
+                input("Presione una tecla para continuar...")
             else:
                 print("No existe una conexión entre %s y %s"%(inicio, destino))
-                input()
+                input("Presione una tecla para continuar...")
             sub_opcion = -1
 
     return
@@ -214,9 +227,11 @@ def menu_grado(grafica):
 
     # Función obtener grado de un Nodo
     id= input("Introduce el id del nodo: ")
-    print("El grado del nodo %s es: %s"%(id, grafica.gradoVertice(id)))
-    input()
-    print("Grado de un nodo")
+    if grafica.gradoVertice(id):
+        print("El grado del nodo %s es: %s"%(id, grafica.gradoVertice(id)))    
+    else: 
+        print("No existe ese nodo en Ba Sing se"))
+    input("Presione una tecla para continuar...")
 
     return
 
@@ -240,13 +255,13 @@ def menu_total(grafica):
         if sub_opcion == 1:
             # Función total Nodo (Pedir id)
             print("El número total de nodos es: %s"%(grafica.numeroNodos()))
-            input()
+            input("Presione una tecla para continuar...")
             print("Total de nodos")
             sub_opcion = -1
         elif sub_opcion == 2:
             # Función total Nodo (Pedir id)
             print("El número total de aristas es: %s"%(grafica.numeroAristas()))
-            input()
+            input("Presione una tecla para continuar...")
             print("Total de aristas")
             sub_opcion = -1
 
@@ -275,10 +290,10 @@ def menu_vaciar(grafica):
             id= input("Introduce el id del nodo: ")
             if grafica.vaciarVertice(id):
                 print("El nodo se vacio correctamente")
-                input()
+                input("Presione una tecla para continuar...")
             else:
                 print("Ese nodo no existe en Ba Sing Se")
-                input()
+                input("Presione una tecla para continuar...")
             print("Vaciar nodo")
             sub_opcion = -1
         elif sub_opcion == 2:
@@ -288,8 +303,9 @@ def menu_vaciar(grafica):
 
             if (warning_op == 'S' or warning_op == 's'):
                 # Función vaciar gráfica
-                g.vacairGrafica()
-                print("Vaciar gráfica")
+                g.vaciarGrafica()
+                print("La grafica se borro por completo")
+                input("Presione una tecla para continuar...")
                 return
             elif (warning_op == 'N' or warning_op == 'n'):
                 sub_opcion = -1
