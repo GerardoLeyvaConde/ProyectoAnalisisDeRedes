@@ -1,4 +1,5 @@
 from collections import defaultdict
+import copy
 
 class Vertice:
     def __init__(self, clave):
@@ -6,7 +7,7 @@ class Vertice:
         self.grado= 0
         self.conectadoA= {}
         self.listaVecinos= []
-    
+
     def agregarVecino(self, vecino, ponderacion=0):
         self.conectadoA[vecino]= ponderacion
         self.grado= self.grado+ 1
@@ -14,12 +15,12 @@ class Vertice:
 
     def __str__(self):
         return str(self.id) + ' conectado a: ' + str([x for x in self.listaVecinos])
-    
+
     def obtenerGrado(self):
         return self.grado
 
     def obtenerVecino(self, clave):
-        for n in self.conectadoA:  
+        for n in self.conectadoA:
             if n.id == clave:
                 return True
         return False
@@ -48,15 +49,15 @@ class Vertice:
         self.conectadoA= {}
         self.listaVecinos= []
         self.grado= 0
-        
+
 class Grafica:
     def __init__(self):
         self.listaVertices= {}
         self.numVertices= 0
         self.numAristas= 0
-    
+
     def agregarVertice(self, clave):
-        if clave not in self.listaVertices:        
+        if clave not in self.listaVertices:
             self.numVertices= self.numVertices + 1
             nuevoVertice= Vertice(clave)
             self.listaVertices[clave]= nuevoVertice
@@ -81,7 +82,7 @@ class Grafica:
         if clave in self.listaVertices:
             return self.listaVertices[clave].obtenerGrado()
         else:
-            return None
+            return -1
 
     def buscarVertice(self, n):
         if n in self.listaVertices:
@@ -97,7 +98,7 @@ class Grafica:
                 return False
         else:
             return False
-    
+
     def obtenerVertices(self):
         return self.listaVertices.keys()
 
@@ -118,7 +119,7 @@ class Grafica:
                 if inicio == destino:
                     self.listaVertices[inicio].eliminarVecino(destino)
                     self.listaVertices[inicio].grado= self.listaVertices[inicio].grado - 1
-                else: 
+                else:
                     self.listaVertices[inicio].eliminarVecino(destino)
                     self.listaVertices[destino].eliminarVecino(inicio)
                 return True
@@ -139,7 +140,7 @@ class Grafica:
         else:
             return False
 
-        
+
     def vaciarVertice(self, n):
         if n in self.listaVertices:
             # aristas_v= len(self.listaVertices[n].listaVecinos)
@@ -155,10 +156,16 @@ class Grafica:
         else:
             return False
 
-    def vaciarGrafica(self):    
+    def vaciarGrafica(self):
         self.listaVertices.clear()
         self.numAristas= 0
         self.numVertices= 0
 
     def __iter__(self):
         return iter(self.listaVertices.values())
+
+    def copiar(self):
+        return copy.deepcopy(self)
+
+    def _del_(self):
+        del self
