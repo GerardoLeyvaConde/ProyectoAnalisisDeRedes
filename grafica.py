@@ -128,12 +128,20 @@ class Grafica:
                     self.lista_vertices[inicio].eliminarConexion(destino)
                     self.lista_vertices[destino].eliminarConexion(inicio)
             for arista in self.lista_aristas:
-                if(arista.origen == inicio) and (arista.destino == destino):
+                if(self.lista_aristas[arista].origen == inicio) and (self.lista_aristas[arista].destino == destino):
                     del self.lista_aristas[arista]
             self.numero_aristas= self.numero_aristas- 1
             return True
         else:
             return False
+
+    def existeArista(self, vertice):
+        for arista in self.lista_aristas:
+            if self.lista_aristas[arista].origen == vertice or self.lista_aristas[arista].destino == vertice:
+                return True
+        
+        return False
+
 
     def gradoVertice(self, clave):
         if clave in self.lista_vertices:
@@ -147,14 +155,23 @@ class Grafica:
 
     def vaciarVertice(self, clave):
         if clave in self.lista_vertices:
+            existe_arista= True
+            while existe_arista:
+                for arista in self.lista_aristas:
+                    if (self.lista_aristas[arista].origen == clave) or (self.lista_aristas[arista].destino == clave):
+                        del self.lista_aristas[arista]
+                    
+                    self.numero_aristas= self.numero_aristas- 1
+                    break
+                if not self.existeArista(clave):
+                    existe_arista= False
+
             for vertice in self.lista_vertices:
                 if self.lista_vertices[vertice].existeConexion(clave):
-                    while nodo in self.lista_vertices[vertice].lista_conectado:
-                        self.lista_vertices[vertice].eliminarConexion(nodo)
-            for arista in self.lista_aristas:
-                if (arista.origen == clave) or (arista.destino == clave):
-                    del self.lista_aristas[arista]
-                    self.numero_aristas= self.numero_aristas- 1
+                    while clave in self.lista_vertices[vertice].lista_conectado:
+                        self.lista_vertices[vertice].eliminarConexion(clave)
+                
+            self.lista_vertices[clave].vaciar()
             return True
         else:
             return False

@@ -236,7 +236,7 @@ def menu_total(grafica):
 
         if sub_opcion == 1:
             # Función total Nodo (Pedir id)
-            print("El número total de nodos es: %s"%(grafica.numeroNodos()))
+            print("El número total de nodos es: %s"%(grafica.numeroVertices()))
             input("Presione una tecla para continuar...")
             print("Total de nodos")
             sub_opcion = -1
