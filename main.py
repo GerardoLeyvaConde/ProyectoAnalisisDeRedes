@@ -32,6 +32,7 @@ def menu(grafica, copia):
         print("6) Vaciar")
         print("7) Copiar")
         print("8) Cargar copia")
+        print("9) Bipartida")
         print("0) Salir")
         print("-------------------------- GRAFICA --------------------------")
 
@@ -44,9 +45,9 @@ def menu(grafica, copia):
             if v:
                 print(v)
 
-        while opcion not in range(9):
+        while opcion not in range(10):
             opcion= pedirOpcion()
-            if (opcion not in range(9)):
+            if (opcion not in range(10)):
                 print("Selecciona una opción válida")
 
         if opcion == 1:
@@ -73,6 +74,13 @@ def menu(grafica, copia):
         elif opcion == 8:
             grafica= copiar_grafica(copia)
             opcion = -1
+        elif opcion == 9:
+            if grafica.esBipartita():
+                input()
+            else:
+                print("La gráfica no es bipartida.")
+                input()
+            opcion= -1
 
     return
 
@@ -209,7 +217,7 @@ def menu_grado(grafica):
 
     # Función obtener grado de un Nodo
     id= input("Introduce el id del nodo: ")
-    if (grafica.gradoVertice(id) >= 0):
+    if grafica.gradoVertice(id) >= 0:
         print("El grado del nodo %s es: %s"%(id, grafica.gradoVertice(id)))
     else:
         print("No existe ese nodo en la gráfica")

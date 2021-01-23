@@ -4,6 +4,7 @@ class Vertice:
         self.id= clave
         self.grado= 0
         self.lista_conectado= []
+        self.color= -1
     
     def __del__(self):
         del self
@@ -95,12 +96,12 @@ class Grafica:
 
     def buscarArista(self, inicio, destino):
         if (inicio in self.lista_vertices) and (destino in self.lista_vertices):
-            if self.lista_vertices[inicio].existeConexion(destino):
-                return True
-            else:
-                return False
+            for arista in self.lista_aristas:
+                if (self.lista_aristas[arista].origen == inicio) and (self.lista_aristas[arista].destino == destino):
+                    return self.lista_aristas[arista]
+            return None
         else:
-            return False
+            return None
 
     def copiar(self):
         return copy.deepcopy(self)
@@ -127,10 +128,9 @@ class Grafica:
                 else:
                     self.lista_vertices[inicio].eliminarConexion(destino)
                     self.lista_vertices[destino].eliminarConexion(inicio)
-            for arista in self.lista_aristas:
-                if(self.lista_aristas[arista].origen == inicio) and (self.lista_aristas[arista].destino == destino):
-                    del self.lista_aristas[arista]
-            self.numero_aristas= self.numero_aristas- 1
+            arista_existe= self.buscarArista(inicio, destino)
+            if arista_existe != None:
+                del self.lista_aristas[arista_existe.id]
             return True
         else:
             return False
@@ -146,6 +146,8 @@ class Grafica:
     def gradoVertice(self, clave):
         if clave in self.lista_vertices:
             return self.lista_vertices[clave].obtenerGrado()
+        else:
+            return -1
 
     def numeroVertices(self):
         return self.numero_vertices
@@ -182,4 +184,42 @@ class Grafica:
         self.numero_aristas= 0
         self.numero_vertices= 0
     
-    
+    def restablecerColores(self):
+        for vertice in self.lista_vertices:
+            self.lista_vertices[vertice].color= -1
+
+    def bipartita(self, clave):
+        cola= []
+        cola.append(clave)
+
+        while cola:
+            u= cola.pop()
+            if self.lista_vertices[u].existeConexion(u):
+                return False
+
+            for vertice in self.lista_vertices[u].lista_conectado:
+                if self.lista_vertices[vertice].color== -1:
+                    self.lista_vertices[vertice].color= 1- self.lista_vertices[u].color
+                    cola.append(vertice)
+                elif self.lista_vertices[vertice].color== self.lista_vertices[u].color:
+                    return False
+        return True
+
+    def esBipartita(self):
+        lista_v= []
+        lista_u= []
+        for vertice in self.lista_vertices:
+            if self.lista_vertices[vertice].color== -1:
+                self.lista_vertices[list(self.lista_vertices.keys())[0]].color= 1
+                if not self.bipartita(vertice):
+                    self.restablecerColores()
+                    return False
+            if self.lista_vertices[vertice].color== 1:
+                lista_v.append(self.lista_vertices[vertice].id)
+            elif self.lista_vertices[vertice].color== 0:
+                lista_u.append(self.lista_vertices[vertice].id)
+        print("Es bipartita")
+        print("V: %s"%(lista_v))
+        print("U: %s"%(lista_u))
+        self.restablecerColores()
+        return True
