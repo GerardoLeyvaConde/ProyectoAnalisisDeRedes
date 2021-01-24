@@ -5,6 +5,7 @@ class Vertice:
         self.grado= 0
         self.lista_conectado= []
         self.color= -1
+        self.bandera= 0
     
     def __del__(self):
         del self
@@ -184,9 +185,10 @@ class Grafica:
         self.numero_aristas= 0
         self.numero_vertices= 0
     
-    def restablecerColores(self):
+    def restablecerVertice(self):
         for vertice in self.lista_vertices:
             self.lista_vertices[vertice].color= -1
+            self.lista_vertices[vertice].bandera= 0
 
     def bipartita(self, clave):
         cola= []
@@ -201,6 +203,7 @@ class Grafica:
                 if self.lista_vertices[vertice].color== -1:
                     self.lista_vertices[vertice].color= 1- self.lista_vertices[u].color
                     cola.append(vertice)
+                    self.lista_vertices[vertice].bandera= 1
                 elif self.lista_vertices[vertice].color== self.lista_vertices[u].color:
                     return False
         return True
@@ -209,17 +212,19 @@ class Grafica:
         lista_v= []
         lista_u= []
         for vertice in self.lista_vertices:
-            if self.lista_vertices[vertice].color== -1:
-                self.lista_vertices[list(self.lista_vertices.keys())[0]].color= 1
+            if self.lista_vertices[vertice].bandera== 0:
+                self.lista_vertices[vertice].color= 1
                 if not self.bipartita(vertice):
-                    self.restablecerColores()
+                    self.restablecerVertice()
                     return False
             if self.lista_vertices[vertice].color== 1:
                 lista_v.append(self.lista_vertices[vertice].id)
             elif self.lista_vertices[vertice].color== 0:
                 lista_u.append(self.lista_vertices[vertice].id)
+            self.lista_vertices[vertice].bandera= 1
+
         print("Es bipartita")
         print("V: %s"%(lista_v))
         print("U: %s"%(lista_u))
-        self.restablecerColores()
+        self.restablecerVertice()
         return True
