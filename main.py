@@ -20,8 +20,8 @@ def menu(grafica, copia):
     sub_opcion = -1
 
     while (opcion != 0):
-        os.system("clear") # LINUX
-        #os.system("cls") # WINDOWS
+        #os.system("clear") # LINUX
+        os.system("cls") # WINDOWS
 
         print("\n-------------------------- MENÚ --------------------------")
         print("1) Agregar")
@@ -77,10 +77,10 @@ def menu(grafica, copia):
             opcion = -1
         elif opcion == 9:
             if grafica.esBipartita():
-                input()
+                input("Presione una tecla para continuar...")
             else:
-                print("La gráfica no es bipartida.")
-                input()
+                print("La gráfica no es bipartita.")
+                input("Presione una tecla para continuar...")
             opcion= -1
         elif opcion == 10:
             if grafica.algoritmoFleury():
@@ -124,8 +124,10 @@ def menu_agregar(grafica):
             clave= 'e' + str(i)
             inicio= input("Introduce el id del nodo de inicio: ")
             destino= input("Introduce el id del nodo del destino: ")
-            grafica.agregarArista(clave, inicio, destino)
-            print("Se agrego la arista correctamente")
+            if grafica.agregarArista(clave, inicio, destino):
+                print("Se agrego la arista correctamente")
+            else:
+                print("No es posible agregar esa arista")
             input("Presione una tecla para continuar...")
             i= i+ 1
             sub_opcion = -1
