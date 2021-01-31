@@ -33,6 +33,7 @@ def menu(grafica, copia):
         print("7) Copiar")
         print("8) Cargar copia")
         print("9) Bipartida")
+        print("10)")
         print("0) Salir")
         print("-------------------------- GRAFICA --------------------------")
 
@@ -45,9 +46,9 @@ def menu(grafica, copia):
             if v:
                 print(v)
 
-        while opcion not in range(10):
+        while opcion not in range(11):
             opcion= pedirOpcion()
-            if (opcion not in range(10)):
+            if (opcion not in range(11)):
                 print("Selecciona una opción válida")
 
         if opcion == 1:
@@ -79,6 +80,13 @@ def menu(grafica, copia):
                 input()
             else:
                 print("La gráfica no es bipartida.")
+                input()
+            opcion= -1
+        elif opcion == 10:
+            if grafica.algoritmoFleury():
+                input()
+            else:
+                print("El paseo no existe.")
                 input()
             opcion= -1
 

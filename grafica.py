@@ -43,7 +43,7 @@ class Arista:
         self.peso= peso
     
     def __str__(self):
-        return str(self.id) + 'Origen: ' + str(self.origen) + ' Destino: ' + str(destino)
+        return str(self.id) + ' Origen: ' + str(self.origen) + ' Destino: ' + str(self.destino)
 
     def __del__(self):
         del self
@@ -100,6 +100,8 @@ class Grafica:
             for arista in self.lista_aristas:
                 if (self.lista_aristas[arista].origen == inicio) and (self.lista_aristas[arista].destino == destino):
                     return self.lista_aristas[arista]
+                elif (self.lista_aristas[arista].origen == destino) and (self.lista_aristas[arista].destino == inicio):
+                    return self.lista_aristas[arista]
             return None
         else:
             return None
@@ -132,6 +134,8 @@ class Grafica:
             arista_existe= self.buscarArista(inicio, destino)
             if arista_existe != None:
                 del self.lista_aristas[arista_existe.id]
+            
+            self.numero_aristas= self.numero_aristas - 1
             return True
         else:
             return False
@@ -227,4 +231,80 @@ class Grafica:
         print("V: %s"%(lista_v))
         print("U: %s"%(lista_u))
         self.restablecerVertice()
+        return True
+
+    def conexa(self):
+        cola= []
+        cola.append(list(self.lista_vertices.keys())[0])
+        self.lista_vertices[list(self.lista_vertices.keys())[0]].bandera= 1
+
+        while cola:
+            u= cola.pop(0)
+            for vertice in self.lista_vertices[u].lista_conectado:
+                if self.lista_vertices[vertice].bandera== 0:
+                    cola.append(vertice)
+                    self.lista_vertices[vertice].bandera= 1
+
+        num_banderas= 0
+        for nodo in self.lista_vertices:
+            if self.lista_vertices[nodo].bandera== 1:
+                num_banderas= num_banderas+ 1
+                self.lista_vertices[nodo].bandera= 0
+
+        if num_banderas == self.numero_vertices:
+            return True
+        else:
+            return False
+        
+    def algoritmoFleury(self):
+        impares= 0
+        inicio= self.lista_vertices[list(self.lista_vertices.keys())[0]]
+        copia = self.copiar()
+        cola= []
+
+        for vertice in self.lista_vertices:
+            if (self.lista_vertices[vertice].grado % 2) != 0:
+                impares= impares + 1
+                inicio= self.lista_vertices[vertice]
+ 
+        if impares != 0 and impares != 2:
+            print(impares)
+            print("Erorr 1")
+            return False
+
+        if not self.conexa():
+            print("Erorr 2")
+            return False
+
+        while copia.numero_aristas != 0:
+            for vecino in copia.lista_vertices[inicio.id].lista_conectado:
+                destino= vecino
+                arista= copia.buscarArista(inicio.id, vecino)
+                cola.append(arista)
+                aux= copia.copiar()
+                aux.eliminarArista(inicio.id, vecino)
+                print(arista)
+                print(len(copia.lista_vertices[inicio.id].lista_conectado))
+                input()
+                if len(copia.lista_vertices[inicio.id].lista_conectado) == 1:
+                    copia.eliminarArista(inicio.id, vecino)
+                    copia.eliminarVertice(inicio.id)
+                    inicio= copia.buscarVertice(destino)
+                    break
+                elif aux.conexa():
+                    copia.eliminarArista(inicio.id, vecino)
+                    inicio= copia.buscarVertice(destino)
+                   
+                    break
+                else:
+                    cola.pop(-1)
+        if impares == 0:
+            print("El paseo de Euler es cerrado.")
+        else:
+            print("El paseo de Euler es abierto.")
+
+        while cola:
+            a= cola.pop()
+            print(a)
+        del copia
         return True
