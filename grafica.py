@@ -261,6 +261,7 @@ class Grafica:
         inicio= self.lista_vertices[list(self.lista_vertices.keys())[0]]
         copia = self.copiar()
         cola= []
+        cola_vertices= []
 
         for vertice in self.lista_vertices:
             if (self.lista_vertices[vertice].grado % 2) != 0:
@@ -281,11 +282,9 @@ class Grafica:
                 destino= vecino
                 arista= copia.buscarArista(inicio.id, vecino)
                 cola.append(arista)
+                cola_vertices.append(inicio)
                 aux= copia.copiar()
                 aux.eliminarArista(inicio.id, vecino)
-                print(arista)
-                print(len(copia.lista_vertices[inicio.id].lista_conectado))
-                input()
                 if len(copia.lista_vertices[inicio.id].lista_conectado) == 1:
                     copia.eliminarArista(inicio.id, vecino)
                     copia.eliminarVertice(inicio.id)
@@ -294,17 +293,24 @@ class Grafica:
                 elif aux.conexa():
                     copia.eliminarArista(inicio.id, vecino)
                     inicio= copia.buscarVertice(destino)
-                   
                     break
                 else:
                     cola.pop(-1)
+                    cola_vertices.pop(-1)
         if impares == 0:
             print("El paseo de Euler es cerrado.")
+            
         else:
             print("El paseo de Euler es abierto.")
-
-        while cola:
-            a= cola.pop()
-            print(a)
+        cola_vertices.append(inicio)
+        camino= []
+        while cola_vertices:
+            v= cola_vertices.pop()
+            camino.append(v.id)
+            if cola:
+                a= cola.pop()
+                camino.append(a.id)
+        print(camino)
         del copia
+        del aux
         return True
