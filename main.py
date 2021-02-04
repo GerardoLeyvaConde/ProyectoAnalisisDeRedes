@@ -33,7 +33,7 @@ def menu(grafica, copia):
         print("7) Copiar")
         print("8) Cargar copia")
         print("9) Bipartida")
-        print("10)")
+        print("10) Buscar paseo de Euler (algoritmo de Fleury)")
         print("0) Salir")
         print("-------------------------- GRAFICA --------------------------")
 
