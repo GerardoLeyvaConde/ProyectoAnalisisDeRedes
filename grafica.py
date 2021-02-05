@@ -269,12 +269,11 @@ class Grafica:
                 inicio= self.lista_vertices[vertice]
  
         if impares != 0 and impares != 2:
-            print(impares)
-            print("Erorr 1")
+            print("Erorr: La cantidad de nodos de grado impar no cumple.")
             return False
 
         if not self.conexa():
-            print("Erorr 2")
+            print("Erorr: La grafica no es conexa.")
             return False
 
         while copia.numero_aristas != 0:
