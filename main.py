@@ -316,4 +316,28 @@ def copiar_grafica(grafica):
 
 g= Grafica()
 c= Grafica()
+lineas=[]
+archivo= open("grafica.txt")
+grafica= [linea[:-1] for linea in archivo]
+
+for linea in grafica:
+    lineas.append(linea)
+
+for elementos in lineas:
+    e= lineas[0]
+    lineas= lineas[1:]
+    if e == '$':
+        break
+    else:
+        g.agregarVertice(e)
+i= 0
+for elementos in lineas:
+    if lineas:
+        a= lineas[0]
+        b= lineas[1]
+        lineas= lineas[2:]
+        g.agregarArista("e"+str(i), a, b)
+        i+= 1
+
+archivo.close()
 menu(g, c)
