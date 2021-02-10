@@ -32,7 +32,7 @@ def menu(grafica, copia):
         print("6) Vaciar")
         print("7) Copiar")
         print("8) Cargar copia")
-        print("9) Bipartida")
+        print("9) Tareas")
         print("10) Buscar paseo de Euler (algoritmo de Fleury)")
         print("0) Salir")
         print("-------------------------- GRAFICA --------------------------")
@@ -83,7 +83,7 @@ def menu(grafica, copia):
                 input("Presione una tecla para continuar...")
             opcion= -1
         elif opcion == 10:
-            grafica.busquedas(0)
+            grafica.busquedas(1)
             input()
             opcion= -1
 
