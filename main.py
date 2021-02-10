@@ -83,11 +83,8 @@ def menu(grafica, copia):
                 input("Presione una tecla para continuar...")
             opcion= -1
         elif opcion == 10:
-            if grafica.algoritmoFleury():
-                input()
-            else:
-                print("El paseo no existe.")
-                input()
+            grafica.busquedas(0)
+            input()
             opcion= -1
 
     return

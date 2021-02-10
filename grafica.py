@@ -1,16 +1,16 @@
 import copy
 class Vertice:
     def __init__(self, clave):
-        self.id= clave
-        self.grado= 0
-        self.lista_conectado= []
-        self.color= -1
-        self.bandera= 0
+        self.id= clave              #Identificador del vertice
+        self.grado= 0               #Grado del vertice
+        self.lista_conectado= []    #Lista de los verices a los que esta conectado el vertice
+        self.color= -1              #Variable utlizada para el algoritmo de Bipartita: Asiga un color al nodo
+        self.bandera= 0             #Indica si el nodo fue visitado o no
     
-    def __del__(self):
+    def __del__(self):              #Iniciador de la clase
         del self
     
-    def __str__(self):
+    def __str__(self):              #Forma de imprimir un vertice
         return str(self.id) + ' conectado a: ' + str([id for id in self.lista_conectado])
 
     def conectar(self, destino):
@@ -314,3 +314,58 @@ class Grafica:
         del copia
         del aux
         return True
+
+    def busquedas(self, tipo):
+        grafiquita= Grafica()
+        frontera= []
+        frontera.append(self.lista_vertices[list(self.lista_vertices.keys())[0]]) #Agregamos el primer vertice de la grafica
+        num_explorados= 0
+        bosque= False
+        i= 0 #Variable para los Id de las aristas
+
+        while True:
+            if num_explorados== self.numero_vertices: #Revisar ya se exploraron todos los vertices
+                break
+            elif len(frontera)== 0: #Si es True, es un bosque
+                bosque= True
+                for vertice in self.lista_vertices:
+                    if self.lista_vertices[vertice].bandera== 0:
+                        frontera.append(self.lista_vertices[vertice])
+                        break
+
+            if tipo== 0: #Busqueda a lo profundo (0)
+                v= frontera.pop()
+                num_explorados+= 1
+
+            elif tipo== 1: #Busqueda a los ancho (1)
+                v= frontera[0]
+                frontera= frontera[1:]
+                num_explorados+= 1
+
+            v.bandera= 1
+            grafiquita.agregarVertice(v.id)
+
+            for vertice in self.lista_vertices[v.id].lista_conectado:
+                if (vertice not in frontera) and (self.lista_vertices[vertice].bandera== 0):
+                    frontera.append(self.lista_vertices[vertice])
+                    grafiquita.agregarVertice(vertice)
+                    grafiquita.agregarArista('e'+str(i),v.id, vertice)
+                    i+= 1
+                    print(frontera)
+                    print(vertice)
+                    input()
+            
+        
+        if bosque:
+            print("El bosque es:")
+        else:
+            print("El árbol de expansión es:")
+
+        for v in grafiquita:
+            print(v)
+        print(grafiquita.numero_aristas)
+        del grafiquita
+        self.restablecerVertice()
+        return
+
+            
