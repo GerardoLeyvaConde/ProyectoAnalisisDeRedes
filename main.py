@@ -70,10 +70,10 @@ def menu(grafica, copia):
             menu_vaciar(grafica)
             opcion = -1
         elif opcion == 7:
-            copia= copiar_grafica(grafica)
+            copia= copiarGrafica(grafica)
             opcion = -1
         elif opcion == 8:
-            grafica= copiar_grafica(copia)
+            grafica= copiarGrafica(copia)
             opcion = -1
         elif opcion == 9:
             if grafica.esBipartita():
@@ -83,7 +83,10 @@ def menu(grafica, copia):
                 input("Presione una tecla para continuar...")
             opcion= -1
         elif opcion == 10:
-            grafica.busquedas(0)
+            if grafica.conexa():
+                print("Si es conexa")
+            else:
+                print("No es conexa")
             input()
             opcion= -1
 
@@ -310,34 +313,38 @@ def menu_vaciar(grafica):
 
     return
 
-def copiar_grafica(grafica):
+def copiarGrafica(grafica):
     return grafica.copiar()
+
+def subirGrafica(graph):
+    lineas=[]
+    archivo= open("grafica.txt")
+    grafica= [linea[:-1] for linea in archivo]
+
+    for linea in grafica:
+        lineas.append(linea)
+
+    for elementos in lineas:
+        e= lineas[0]
+        lineas= lineas[1:]
+        if e == '$':
+            break
+        else:
+            graph.agregarVertice(e)
+    i= 0
+    for elementos in lineas:
+        if lineas:
+            a= lineas[0]
+            b= lineas[1]
+            lineas= lineas[2:]
+            graph.agregarArista("e"+str(i), a, b)
+            i+= 1
+
+    archivo.close()
+    return graph
 
 
 g= Grafica()
 c= Grafica()
-lineas=[]
-archivo= open("grafica.txt")
-grafica= [linea[:-1] for linea in archivo]
-
-for linea in grafica:
-    lineas.append(linea)
-
-for elementos in lineas:
-    e= lineas[0]
-    lineas= lineas[1:]
-    if e == '$':
-        break
-    else:
-        g.agregarVertice(e)
-i= 0
-for elementos in lineas:
-    if lineas:
-        a= lineas[0]
-        b= lineas[1]
-        lineas= lineas[2:]
-        g.agregarArista("e"+str(i), a, b)
-        i+= 1
-
-archivo.close()
+g= subirGrafica(g)
 menu(g, c)
