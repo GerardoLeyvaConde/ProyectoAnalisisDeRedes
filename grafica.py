@@ -540,35 +540,42 @@ class Grafica:
     @param tipo: Int (1 o 0) que representa que tipo de busque va a realizar.
     """
     def busquedas(self, tipo):
-        grafiquita= Grafica()                                                     #Copia de la grafica original con la que trabaja el algoritmo
-        frontera= []                                                              #Cola o pila segun el tipo de busqueda
+        grafiquita = Grafica()                                                     #Copia de la grafica original con la que trabaja el algoritmo
+        frontera = []                                                              #Cola o pila segun el tipo de busqueda
         frontera.append(self.lista_vertices[list(self.lista_vertices.keys())[0]]) #Agregamos el primer vertice de la grafica
-        num_explorados= 0                                                         #Int que representa el número de vertices explorados en la grafica
-        bosque= False                                                             #Variable que estable y es un bosque o no
-        i= 0                                                                      #Variable auxiliar para los Id de las aristas
+        v = frontera[0]
+        num_explorados = 1                                                         #Int que representa el número de vertices explorados en la grafica
+        bosque = False                                                             #Variable que estable y es un bosque o no
+        i = 0                                                                      #Variable auxiliar para los Id de las aristas
 
         while True:
-            if num_explorados== self.numero_vertices:   #Revisar ya se exploraron todos los vertices
+            if num_explorados == self.numero_vertices:   #Revisar ya se exploraron todos los vertices
                 break                                   #Si el numero de vertices explorados es igual al número de vertices totales en la grafica. Se rompe el ciclo
-            elif len(frontera)== 0:                     #Si la frontera que es nuestra pila/cola esta vacia y no estan todos los nodos explorados. Entoncecs es un bosque
-                bosque= True
+            elif len(frontera) == 0:                     #Si la frontera que es nuestra pila/cola esta vacia y no estan todos los nodos explorados. Entoncecs es un bosque
+                bosque = True
                 for vertice in self.lista_vertices:                     #Revisa los vertices de la grafica para encontrar uno que no hay sido visitado.
-                    if self.lista_vertices[vertice].bandera== 0:        #Agregamos el primero que encuentra a frontera
+                    if self.lista_vertices[vertice].bandera == 0:        #Agregamos el primero que encuentra a frontera
                         frontera.append(self.lista_vertices[vertice])
                         num_explorados += 1
                         break
 
-            if tipo== 0: #Busqueda a lo profundo (0)
-                v= frontera.pop()                       #
-                num_explorados+= 1
+            if tipo == 0: #Busqueda a lo profundo (0)
+                cont = 0
+                for vertice in self.lista_vertices[v.id].lista_conectado:
+                    if (self.lista_vertices[vertice].bandera == 1):
+                        cont += 1
+                if cont == len(self.lista_vertices[v.id].lista_conectado):
+                    v.bandera = 1
+                    v = frontera[-1]
+                    frontera = frontera[:-1]
 
             elif tipo== 1: #Busqueda a los ancho (1)
-                v= frontera[0]                          #
+                v = frontera[0]                          #
                 frontera= frontera[1:]
-                num_explorados+= 1
 
-            v.bandera= 1
+            v.bandera = 1
             grafiquita.agregarVertice(v.id)
+
             for vertice in self.lista_vertices[v.id].lista_conectado:
                 if (self.lista_vertices[vertice] not in frontera) and (self.lista_vertices[vertice].bandera == 0):
                     grafiquita.agregarVertice(vertice)
@@ -593,3 +600,4 @@ class Grafica:
 
         del grafiquita
         self.restablecerVertice()
+        return
