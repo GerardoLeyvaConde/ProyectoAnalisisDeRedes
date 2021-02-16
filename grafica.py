@@ -599,5 +599,5 @@ class Grafica:
             print(v)
 
         del grafiquita
-        self.restablecerVertice()
+        self.restablecerVertices()
         return

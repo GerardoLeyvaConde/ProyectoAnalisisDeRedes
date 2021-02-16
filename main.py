@@ -32,8 +32,10 @@ def menu(grafica, copia):
         print("6) Vaciar")
         print("7) Copiar")
         print("8) Cargar copia")
-        print("9) Tareas")
+        print("9) verificar si grafica es bipartita")
         print("10) Buscar paseo de Euler (algoritmo de Fleury)")
+        print("11) Buscar árbol de expansión (busqueda a lo ancho)")
+        print("12) Buscar árbol de expansión (busqueda a lo profundo)")
         print("0) Salir")
         print("-------------------------- GRAFICA --------------------------")
 
@@ -46,9 +48,9 @@ def menu(grafica, copia):
             if v:
                 print(v)
 
-        while opcion not in range(11):
+        while opcion not in range(13):
             opcion= pedirOpcion()
-            if (opcion not in range(11)):
+            if (opcion not in range(13)):
                 print("Selecciona una opción válida")
 
         if opcion == 1:
@@ -83,15 +85,20 @@ def menu(grafica, copia):
                 input("Presione una tecla para continuar...")
             opcion= -1
         elif opcion == 10:
-<<<<<<< HEAD
-            if grafica.conexa():
-                print("Si es conexa")
+            if(grafica.Fleury()):
+                input("Presione una tecla para continuar...")
             else:
-                print("No es conexa")
-=======
+                print("No es posible encontrar un paseo de euler.")
+                input("Presione una tecla para continuar...")
+            opcion= -1
+
+        elif opcion == 11:
             grafica.busquedas(1)
->>>>>>> b58cc36349efc2f39eb7abad43843736acf6c339
-            input()
+            input("Presione una tecla para continuar...")
+            opcion= -1
+        elif opcion == 12:
+            grafica.busquedas(0)
+            input("Presione una tecla para continuar...")
             opcion= -1
 
     return
