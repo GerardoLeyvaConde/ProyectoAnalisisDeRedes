@@ -8,10 +8,10 @@ def pedirOpcion():
     num= -1
     while(not correcto):
         try:
-            num= int(input("Introduce tu opción: "))
+            num= int(input("\nIntroduce tu opción: "))
             correcto= True
         except ValueError:
-            print("Error: Introduce un número valido")
+            print("\nError: Introduce un número valido")
     return num
 
 
@@ -23,7 +23,7 @@ def menu(grafica, copia):
         #os.system("clear") # LINUX
         os.system("cls") # WINDOWS
 
-        print("\n-------------------------- MENÚ --------------------------")
+        print("-------------------------- MENÚ --------------------------")
         print("1) Agregar")
         print("2) Eliminar")
         print("3) Buscar")
@@ -32,26 +32,24 @@ def menu(grafica, copia):
         print("6) Vaciar")
         print("7) Copiar")
         print("8) Cargar copia")
-        print("9) verificar si grafica es bipartita")
-        print("10) Buscar paseo de Euler (algoritmo de Fleury)")
-        print("11) Buscar árbol de expansión (busqueda a lo ancho)")
-        print("12) Buscar árbol de expansión (busqueda a lo profundo)")
+        print("9) Tareas")
+
         print("0) Salir")
-        print("-------------------------- GRAFICA --------------------------")
+        if(len(grafica.lista_vertices) != 0): print("\n-------------------------- GRAFICA --------------------------")
 
         for v in grafica:
             if v:
                 print(v)
 
-        print("-------------------------- COPIA GRAFICA --------------------------")
+        if(len(copia.lista_vertices) != 0): print("\n-------------------------- COPIA GRAFICA --------------------------")
         for v in copia:
             if v:
                 print(v)
 
-        while opcion not in range(13):
+        while opcion not in range(10):
             opcion= pedirOpcion()
-            if (opcion not in range(13)):
-                print("Selecciona una opción válida")
+            if (opcion not in range(10)):
+                print("\nSelecciona una opción válida")
 
         if opcion == 1:
             menu_agregar(grafica)
@@ -78,28 +76,8 @@ def menu(grafica, copia):
             grafica= copiarGrafica(copia)
             opcion = -1
         elif opcion == 9:
-            if grafica.esBipartita():
-                input("Presione una tecla para continuar...")
-            else:
-                print("La gráfica no es bipartita.")
-                input("Presione una tecla para continuar...")
-            opcion= -1
-        elif opcion == 10:
-            if(grafica.Fleury()):
-                input("Presione una tecla para continuar...")
-            else:
-                print("No es posible encontrar un paseo de euler.")
-                input("Presione una tecla para continuar...")
-            opcion= -1
-
-        elif opcion == 11:
-            grafica.busquedas(1)
-            input("Presione una tecla para continuar...")
-            opcion= -1
-        elif opcion == 12:
-            grafica.busquedas(0)
-            input("Presione una tecla para continuar...")
-            opcion= -1
+            menu_tareas(grafica)
+            opcion = -1
 
     return
 
@@ -119,7 +97,7 @@ def menu_agregar(grafica):
         while sub_opcion not in range(3):
             sub_opcion= pedirOpcion()
             if (sub_opcion not in range(3)):
-                print("Selecciona una opción válida")
+                print("\nSelecciona una opción válida")
 
         if sub_opcion == 1:
             # Función agregar Nodo (Pedir id)
@@ -354,8 +332,57 @@ def subirGrafica(graph):
     archivo.close()
     return graph
 
+def menu_tareas(grafica):
+    global sub_opcion
+    sub_opcion = -1
 
-g= Grafica()
-c= Grafica()
-g= subirGrafica(g)
+    while(sub_opcion != 0):
+        #os.system("clear") # LINUX
+        os.system("cls") # WINDOWS
+
+        print("-------------------------- TAREAS --------------------------")
+
+        print("1) Verificar si grafica es bipartita")
+        print("2) Buscar paseo de Euler (algoritmo de Fleury)")
+        print("3) Buscar árbol de expansión (busqueda a lo ancho)")
+        print("4) Buscar árbol de expansión (busqueda a lo profundo)")
+
+        print("0) Regresar")
+
+        while sub_opcion not in range(5):
+            sub_opcion = pedirOpcion()
+            if (sub_opcion not in range(5)):
+                print("\nSelecciona una opción válida")
+
+        if sub_opcion == 1:
+            if grafica.esBipartita():
+                input("\nPresione una tecla para continuar...")
+            else:
+                print("\nLa gráfica no es bipartita.")
+                input("\nPresione una tecla para continuar...")
+            sub_opcion = -1
+
+        elif sub_opcion == 2:
+            if(grafica.Fleury()):
+                input("\nPresione una tecla para continuar...")
+            else:
+                print("\nNo es posible encontrar un paseo de Euler.")
+                input("\nPresione una tecla para continuar...")
+            sub_opcion = -1
+
+        elif sub_opcion == 3:
+            grafica.busquedas(1)
+            input("\nPresione una tecla para continuar...")
+            sub_opcion = -1
+
+        elif sub_opcion == 4:
+            grafica.busquedas(0)
+            input("\nPresione una tecla para continuar...")
+            sub_opcion = -1
+
+    return
+
+g = Grafica()
+c = Grafica()
+g = subirGrafica(g)
 menu(g, c)
