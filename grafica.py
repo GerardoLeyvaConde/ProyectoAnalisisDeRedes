@@ -1,4 +1,5 @@
 import copy
+from operator import attrgetter
 class Vertice:
     """
     Constructor de la clase Vertice para crearlo con una clave
@@ -565,8 +566,9 @@ class Grafica:
             if tipo == 0: #Busqueda a lo profundo (0)
                 cont = 0
                 for vertice in self.lista_vertices[v.id].lista_conectado:
-                    if (self.lista_vertices[vertice].bandera == 1):
-                        cont += 1
+                    if (self.lista_vertices[vertice].bandera == 0):
+                        break
+                    cont += 1
                 if cont == len(self.lista_vertices[v.id].lista_conectado):
                     v.bandera = 1
                     v = frontera[-1]
@@ -604,3 +606,47 @@ class Grafica:
         del grafiquita
         self.restablecerVertices()
         return
+    """
+    Algoritmo que busca el árbol de minima expansion en una grafica conexa.
+    """
+    def kruskal(self):
+        if not self.conexa():                                       #Si no es conexa, regresa False y termina el algoritmo
+            return False    
+        grafiquita = Grafica()                                      #El arbol de minima expansion
+        aristas_ordenas= []                                         #Lista de aristas ordenada por pesos de menor a mayor
+        total_vertices = self.numero_vertices
+        lista_padres = list(range(total_vertices))                  #Lista de padres de los vertices
+        i = 0                                                       #Variable auxiliar para contar la cantidad de aristas.
+        peso_total= 0                                               #Peso total del árbol
+
+        for arista in self.lista_aristas:                          #Guardamos todas las aristas en nuestra lista
+            aristas_ordenas.append(self.lista_aristas[arista])
+
+        aristas_ordenas.sort(key=attrgetter('peso'))               #Ordenamos la lista en base el peso
+        vertices = list(self.lista_vertices.values())              #Lista de vertices
+
+        for arista in aristas_ordenas:
+            if busqueda(lista_padres, vertices.index(self.lista_vertices[arista.origen])) is not busqueda(lista_padres, vertices.index(self.lista_vertices[arista.destino])): #Si los vertices no tienen la misma raíz
+                grafiquita.agregarVertice(arista.origen)                                            #Entonces agregamos los vertices de origen
+                grafiquita.agregarVertice(arista.destino)                                           #Y destino a nuestro arbol
+                grafiquita.agregarArista(arista.id, arista.origen, arista.destino, arista.peso)     #Agregamos la arista
+                i += 1                                                                              #Sumamos uno a la cantidad de aristas
+                lista_padres= union(lista_padres, vertices.index(self.lista_vertices[arista.origen]), vertices.index(self.lista_vertices[arista.destino])) #Reacomodamos las raices
+                peso_total += arista.peso                                                           #Sumamos el peso de la arista al peso total del árbol
+            if i == total_vertices - 1:            #Si el número total de aristas es igual al el numero de vertices menos uno, entonces ya tenemos el arbol de expansion
+                break
+        
+        print("El árbol de minima expansion es: ")          #Imprimimos el arbol
+        for v in grafiquita:
+            print(v)
+        print("Peso del árbol: ", peso_total)              #Imprimimos el peso total del arbol
+        del grafiquita
+        return True
+
+def busqueda(lista, indice):
+    if(lista[indice] == indice): return indice
+    return busqueda(lista, lista[indice])
+
+def union(lista, u, v):
+    lista[busqueda(lista, u)] = busqueda(lista, v)
+    return lista

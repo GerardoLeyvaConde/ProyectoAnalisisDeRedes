@@ -325,8 +325,9 @@ def subirGrafica(graph):
         if lineas:
             a= lineas[0]
             b= lineas[1]
-            lineas= lineas[2:]
-            graph.agregarArista("e"+str(i), a, b)
+            c= lineas[2]
+            lineas= lineas[3:]
+            graph.agregarArista("e"+str(i), a, b, int(c))
             i+= 1
 
     archivo.close()
@@ -346,12 +347,13 @@ def menu_tareas(grafica):
         print("2) Buscar paseo de Euler (algoritmo de Fleury)")
         print("3) Buscar árbol de expansión (busqueda a lo ancho)")
         print("4) Buscar árbol de expansión (busqueda a lo profundo)")
+        print("5) Kruskal")
 
         print("0) Regresar")
 
-        while sub_opcion not in range(5):
+        while sub_opcion not in range(6):
             sub_opcion = pedirOpcion()
-            if (sub_opcion not in range(5)):
+            if (sub_opcion not in range(6)):
                 print("\nSelecciona una opción válida")
 
         if sub_opcion == 1:
@@ -377,6 +379,10 @@ def menu_tareas(grafica):
 
         elif sub_opcion == 4:
             grafica.busquedas(0)
+            input("\nPresione una tecla para continuar...")
+            sub_opcion = -1
+        elif sub_opcion == 5:
+            grafica.kruskal()
             input("\nPresione una tecla para continuar...")
             sub_opcion = -1
 
