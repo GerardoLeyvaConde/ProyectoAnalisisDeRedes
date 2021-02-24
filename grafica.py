@@ -611,21 +611,21 @@ class Grafica:
     """
     def kruskal(self):
         if not self.conexa():                                       #Si no es conexa, regresa False y termina el algoritmo
-            return False    
+            return False
         grafiquita = Grafica()                                      #El arbol de minima expansion
-        aristas_ordenas= []                                         #Lista de aristas ordenada por pesos de menor a mayor
+        aristas_ordenadas= []                                         #Lista de aristas ordenada por pesos de menor a mayor
         total_vertices = self.numero_vertices
         lista_padres = list(range(total_vertices))                  #Lista de padres de los vertices
         i = 0                                                       #Variable auxiliar para contar la cantidad de aristas.
         peso_total= 0                                               #Peso total del árbol
 
         for arista in self.lista_aristas:                          #Guardamos todas las aristas en nuestra lista
-            aristas_ordenas.append(self.lista_aristas[arista])
+            aristas_ordenadas.append(self.lista_aristas[arista])
 
-        aristas_ordenas.sort(key=attrgetter('peso'))               #Ordenamos la lista en base el peso
+        aristas_ordenadas.sort(key=attrgetter('peso'))               #Ordenamos la lista en base el peso
         vertices = list(self.lista_vertices.values())              #Lista de vertices
 
-        for arista in aristas_ordenas:
+        for arista in aristas_ordenadas:
             if busqueda(lista_padres, vertices.index(self.lista_vertices[arista.origen])) is not busqueda(lista_padres, vertices.index(self.lista_vertices[arista.destino])): #Si los vertices no tienen la misma raíz
                 grafiquita.agregarVertice(arista.origen)                                            #Entonces agregamos los vertices de origen
                 grafiquita.agregarVertice(arista.destino)                                           #Y destino a nuestro arbol
@@ -635,7 +635,7 @@ class Grafica:
                 peso_total += arista.peso                                                           #Sumamos el peso de la arista al peso total del árbol
             if i == total_vertices - 1:            #Si el número total de aristas es igual al el numero de vertices menos uno, entonces ya tenemos el arbol de expansion
                 break
-        
+
         print("El árbol de minima expansion es: ")          #Imprimimos el arbol
         for v in grafiquita:
             print(v)

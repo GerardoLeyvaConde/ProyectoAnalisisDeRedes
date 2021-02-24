@@ -382,8 +382,11 @@ def menu_tareas(grafica):
             input("\nPresione una tecla para continuar...")
             sub_opcion = -1
         elif sub_opcion == 5:
-            grafica.kruskal()
-            input("\nPresione una tecla para continuar...")
+            if (grafica.kruskal()):
+                input("\nPresione una tecla para continuar...")
+            else:
+                print("\nLa gráfica no es conexa")
+                input("\nPresione una tecla para continuar...")
             sub_opcion = -1
 
     return
