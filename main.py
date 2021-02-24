@@ -51,33 +51,18 @@ def menu(grafica, copia):
             if (opcion not in range(10)):
                 print("\nSelecciona una opción válida")
 
-        if opcion == 1:
-            menu_agregar(grafica)
-            opcion = -1
-        elif opcion == 2:
-            menu_eliminar(grafica)
-            opcion = -1
-        elif opcion == 3:
-            menu_buscar(grafica)
-            opcion = -1
-        elif opcion == 4:
-            menu_grado(grafica)
-            opcion = -1
-        elif opcion == 5:
-            menu_total(grafica)
-            opcion = -1
-        elif opcion == 6:
-            menu_vaciar(grafica)
-            opcion = -1
-        elif opcion == 7:
-            copia= copiarGrafica(grafica)
-            opcion = -1
-        elif opcion == 8:
-            grafica= copiarGrafica(copia)
-            opcion = -1
-        elif opcion == 9:
-            menu_tareas(grafica)
-            opcion = -1
+        if opcion == 0: return
+        elif opcion == 1: menu_agregar(grafica)
+        elif opcion == 2: menu_eliminar(grafica)
+        elif opcion == 3: menu_buscar(grafica)
+        elif opcion == 4: menu_grado(grafica)
+        elif opcion == 5: menu_total(grafica)
+        elif opcion == 6: menu_vaciar(grafica)
+        elif opcion == 7: copia= copiarGrafica(grafica)
+        elif opcion == 8: grafica= copiarGrafica(copia)
+        elif opcion == 9: menu_tareas(grafica)
+
+        opcion = -1
 
     return
 
@@ -99,27 +84,31 @@ def menu_agregar(grafica):
             if (sub_opcion not in range(3)):
                 print("\nSelecciona una opción válida")
 
-        if sub_opcion == 1:
+        if sub_opcion == 0: return
+        elif sub_opcion == 1:
             # Función agregar Nodo (Pedir id)
             id= input("Introduce el identificador del nodo: ")
+
             if (grafica.agregarVertice(id)):
                 print("Se agrego el nodo correctamente")
             else:
                 print("Ya existe un nodo con ese identificador")
-            input("Presione una tecla para continuar...")
-            sub_opcion = -1
+
         elif sub_opcion == 2:
             # Función agregar Nodo (Pedir id)
             clave= 'e' + str(i)
             inicio= input("Introduce el id del nodo de inicio: ")
             destino= input("Introduce el id del nodo del destino: ")
+
             if grafica.agregarArista(clave, inicio, destino):
                 print("Se agrego la arista correctamente")
             else:
                 print("No es posible agregar esa arista")
-            input("Presione una tecla para continuar...")
+
             i= i+ 1
-            sub_opcion = -1
+
+        input("\nPresione ENTER para continuar...")
+        sub_opcion = -1
 
     return
 
@@ -140,29 +129,29 @@ def menu_eliminar(grafica):
             if (sub_opcion not in range(3)):
                 print("Selecciona una opción válida")
 
-        if sub_opcion == 1:
+        if sub_opcion == 0: return
+        elif sub_opcion == 1:
             # Función eliminar Nodo (Pedir id)
             id= input("Introduce el identificador del nodo que desea borrar: ")
+
             if grafica.eliminarVertice(id):
                 print("El nodo se elimino correctamente")
-                input("Presione una tecla para continuar...")
             else:
-                print("No existe ese nodo en Ba Sing se")
-                input("Presione una tecla para continuar...")
-            print("Eliminar nodo")
-            sub_opcion = -1
+                print("No existe ese nodo en la gráfica")
+
         elif sub_opcion == 2:
             # Función eliminar Nodo (Pedir id)
             inicio= input("Introduce el id del nodo de inicio: ")
             destino= input("Introduce el id del nodo del destino: ")
+
             if grafica.eliminarArista(inicio, destino):
                 print("Se elimino la arista correctamente")
-                input("Presione una tecla para continuar...")
             else:
-                print("No existe esa arista en Ba Sing se")
-                input("Presione una tecla para continuar...")
-            print("Eliminar arista")
-            sub_opcion = -1
+                print("No existe esa arista en la gráfica")
+
+
+        input("\nPresione ENTER para continuar...")
+        sub_opcion = -1
 
     return
 
@@ -183,30 +172,30 @@ def menu_buscar(grafica):
             if (sub_opcion not in range(3)):
                 print("Selecciona una opción válida")
 
-        if sub_opcion == 1:
+        if sub_opcion == 0: return
+        elif sub_opcion == 1:
             # Función buscar Nodo (Pedir id)
             id= input("Introduce el id del nodo que busca: ")
             nodo= grafica.buscarVertice(id)
+
             if nodo:
                 print(nodo.__str__())
                 input("Presione una tecla para continuar...")
             else:
                 print("No existe ese nodo en gráfica")
-                input("Presione una tecla para continuar...")
-            print("Buscar nodo")
-            sub_opcion = -1
+
         elif sub_opcion == 2:
             # Función buscar Nodo (Pedir id)
-            print("Buscar arista")
             inicio= input("Introduce el id del nodo de inicio: ")
             destino= input("Introduce el id del nodo del destino: ")
+
             if grafica.buscarArista(inicio, destino):
                 print ("Existe la arista entre %s y %s"%(inicio, destino))
-                input("Presione una tecla para continuar...")
             else:
                 print("No existe una conexión entre %s y %s"%(inicio, destino))
-                input("Presione una tecla para continuar...")
-            sub_opcion = -1
+
+        input("\nPresione ENTER para continuar...")
+        sub_opcion = -1
 
     return
 
@@ -220,7 +209,8 @@ def menu_grado(grafica):
         print("El grado del nodo %s es: %s"%(id, grafica.gradoVertice(id)))
     else:
         print("No existe ese nodo en la gráfica")
-    input("Presione una tecla para continuar...")
+
+    input("\nPresione ENTER para continuar...")
 
     return
 
@@ -241,18 +231,16 @@ def menu_total(grafica):
             if (sub_opcion not in range(3)):
                 print("Selecciona una opción válida")
 
-        if sub_opcion == 1:
+        if sub_opcion == 0: return
+        elif sub_opcion == 1:
             # Función total Nodo (Pedir id)
-            print("El número total de nodos es: %s"%(grafica.numeroVertices()))
-            input("Presione una tecla para continuar...")
-            print("Total de nodos")
-            sub_opcion = -1
+            print("\nEl número total de nodos es: %s"%(grafica.numeroVertices()))
         elif sub_opcion == 2:
             # Función total Nodo (Pedir id)
-            print("El número total de aristas es: %s"%(grafica.numeroAristas()))
-            input("Presione una tecla para continuar...")
-            print("Total de aristas")
-            sub_opcion = -1
+            print("\nEl número total de aristas es: %s"%(grafica.numeroAristas()))
+
+        input("\nPresione ENTER para continuar...")
+        sub_opcion = -1
 
     return
 
@@ -274,31 +262,31 @@ def menu_vaciar(grafica):
             if (sub_opcion not in range(3)):
                 print("Selecciona una opción válida")
 
-        if sub_opcion == 1:
+        if sub_opcion == 0: return
+        elif sub_opcion == 1:
             # Función vaciar Nodo (Pedir id)
             id= input("Introduce el id del nodo: ")
-            if grafica.vaciarVertice(id):
-                print("El nodo se vacio correctamente")
-                input("Presione una tecla para continuar...")
-            else:
-                print("Ese nodo no existe en Ba Sing Se")
-                input("Presione una tecla para continuar...")
-            print("Vaciar nodo")
-            sub_opcion = -1
+
+            if grafica.vaciarVertice(id): print("El nodo se vacio correctamente")
+            else: print("Ese nodo no existe en la gráfica")
+
         elif sub_opcion == 2:
             print("Seguro que quieres vaciar la grafica? (Empezar desde cero)")
+
             while(warning_op not in ['S','s','n','N']):
                 warning_op = input("(S/N): ")
 
             if (warning_op in ['S','s']):
                 # Función vaciar gráfica
                 grafica.vaciarGrafica()
-                print("La grafica se borro por completo")
-                input("Presione una tecla para continuar...")
+                print("La gráfica se borro por completo")
                 return
+
             elif (warning_op in ['N','n']):
-                sub_opcion = -1
                 warning_op = ''
+
+        input("\nPresione ENTER para continuar...")
+        sub_opcion = -1
 
     return
 
@@ -345,51 +333,65 @@ def menu_tareas(grafica):
 
         print("1) Verificar si grafica es bipartita")
         print("2) Buscar paseo de Euler (algoritmo de Fleury)")
-        print("3) Buscar árbol de expansión (busqueda a lo ancho)")
-        print("4) Buscar árbol de expansión (busqueda a lo profundo)")
-        print("5) Kruskal")
+        print("3) Buscar árbol de expansión")
 
         print("0) Regresar")
 
-        while sub_opcion not in range(6):
+        while sub_opcion not in range(4):
             sub_opcion = pedirOpcion()
-            if (sub_opcion not in range(6)):
+            if (sub_opcion not in range(4)):
                 print("\nSelecciona una opción válida")
 
-        if sub_opcion == 1:
-            if grafica.esBipartita():
-                input("\nPresione una tecla para continuar...")
-            else:
-                print("\nLa gráfica no es bipartita.")
-                input("\nPresione una tecla para continuar...")
-            sub_opcion = -1
+        if sub_opcion == 0: return
+        elif sub_opcion == 1:
+            if not grafica.esBipartita(): print("\nLa gráfica no es bipartita.")
 
         elif sub_opcion == 2:
-            if(grafica.Fleury()):
-                input("\nPresione una tecla para continuar...")
-            else:
-                print("\nNo es posible encontrar un paseo de Euler.")
-                input("\nPresione una tecla para continuar...")
-            sub_opcion = -1
+            if not grafica.Fleury(): print("\nNo es posible encontrar un paseo de Euler.")
 
         elif sub_opcion == 3:
+            menu_expansion(grafica)
+
+
+        if sub_opcion != 3: input("\nPresione ENTER para continuar...")
+        sub_opcion = -1
+
+def menu_expansion(grafica):
+    exp = -1
+
+    while(exp != 0):
+        #os.system("clear") # LINUX
+        os.system("cls") # WINDOWS
+
+        print("------------------ BÚSQUEDA DE ÁRBOLES DE EXPANSIÓN ------------------")
+        print("1) Buscar árbol de expansión (busqueda a lo ancho)")
+        print("2) Buscar árbol de expansión (busqueda a lo profundo)")
+        print("3) Buscar árbol de expansión (Kruskal)")
+        print("4) Buscar árbol de expansión (Prim)")
+
+        print("0) Regresar")
+
+        while exp not in range(5):
+            exp = pedirOpcion()
+            if (exp not in range(5)):
+                print("\nSelecciona una opción válida")
+
+        if exp == 0: return
+        elif exp == 1:
             grafica.busquedas(1)
-            input("\nPresione una tecla para continuar...")
-            sub_opcion = -1
 
-        elif sub_opcion == 4:
+        elif exp == 2:
             grafica.busquedas(0)
-            input("\nPresione una tecla para continuar...")
-            sub_opcion = -1
-        elif sub_opcion == 5:
-            if (grafica.kruskal()):
-                input("\nPresione una tecla para continuar...")
-            else:
-                print("\nLa gráfica no es conexa")
-                input("\nPresione una tecla para continuar...")
-            sub_opcion = -1
 
-    return
+        elif exp == 3:
+            if not grafica.kruskal(): print("\nLa gráfica no es conexa")
+
+        elif exp == 4:
+            #if not grafica.prim(): print("\nLa gráfica no es conexa")
+            print("Quién sos?")
+
+        input("\nPresione ENTER para continuar...")
+        exp = -1
 
 g = Grafica()
 c = Grafica()
