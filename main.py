@@ -384,7 +384,7 @@ def menu_expansion(grafica):
             grafica.busquedas(0)
 
         elif exp == 3:
-            if not grafica.kruskal(): print("\nLa gráfica no es conexa")
+            grafica.kruskal()
 
         elif exp == 4:
             #if not grafica.prim(): print("\nLa gráfica no es conexa")
