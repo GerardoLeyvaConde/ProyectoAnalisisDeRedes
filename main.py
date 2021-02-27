@@ -32,7 +32,7 @@ def menu(grafica, copia):
         print("6) Vaciar")
         print("7) Copiar")
         print("8) Cargar copia")
-        print("9) Tareas")
+        if(len(grafica.lista_vertices) != 0): print("9) Tareas")
 
         print("0) Salir")
         if(len(grafica.lista_vertices) != 0): print("\n-------------------------- GRAFICA --------------------------")
@@ -387,8 +387,7 @@ def menu_expansion(grafica):
             grafica.kruskal()
 
         elif exp == 4:
-            #if not grafica.prim(): print("\nLa gráfica no es conexa")
-            print("Quién sos?")
+            grafica.prim()
 
         input("\nPresione ENTER para continuar...")
         exp = -1

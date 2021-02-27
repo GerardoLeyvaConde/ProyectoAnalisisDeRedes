@@ -82,10 +82,10 @@ class Arista:
     @param peso:    Int o Float del peso que tiene la arista.
     """
     def __init__(self, clave, origen, destino, peso= 0):
-        self.id= clave          #Identificador de la arista
-        self.origen= origen     #Identificador del vertice donde empieza la arista
-        self.destino= destino   #Identificador del vertice donde termina la arista
-        self.peso= peso         #Peso de la arista
+        self.id = clave          #Identificador de la arista
+        self.origen = origen     #Identificador del vertice donde empieza la arista
+        self.destino = destino   #Identificador del vertice donde termina la arista
+        self.peso = peso         #Peso de la arista
 
     """
     Sobrecargo de operador para imprimir la arista de la forma deseada.
@@ -575,7 +575,7 @@ class Grafica:
                     frontera = frontera[:-1]
 
             elif tipo== 1: #Busqueda a los ancho (1)
-                v = frontera[0]                          #
+                v = frontera[0]
                 frontera= frontera[1:]
 
             v.bandera = 1
@@ -610,50 +610,125 @@ class Grafica:
     Algoritmo que busca el árbol de minima expansion en una grafica conexa.
     """
     def kruskal(self):
-        
-        grafiquita = Grafica()                                      #El arbol de minima expansion o bosque
-        aristas_ordenadas= []                                         #Lista de aristas ordenada por pesos de menor a mayor
-        total_vertices = self.numero_vertices
-        lista_padres = list(range(total_vertices))                  #Lista de padres de los vertices
-        peso_total= 0                                               #Peso total del árbol o bosque
-        bosque = False                                    
 
-        for vertice in self.lista_vertices:                     #Copiamos los vertices de la grafica original en lo que sera nuetro
-            grafiquita.agregarVertice(vertice)                  #arbol de minima expansion o bosque.
+        grafiquita = Grafica()                                      #El arbol de minima expansion o bosque
+        aristas_ordenadas= []                                       #Lista de aristas ordenada por pesos de menor a mayor
+        total_vertices = self.numero_vertices
+        lista_padres = list(range(total_vertices))                  #Lista de padres de los vértices
+        peso_total= 0                                               #Peso total del árbol o bosque
+        bosque = False
+
+        for vertice in self.lista_vertices:                     #Copiamos los vertices de la grafica original en lo que sera nuestro
+            grafiquita.agregarVertice(vertice)                  #árbol de minima expansion o bosque.
 
         for arista in self.lista_aristas:                          #Guardamos todas las aristas en nuestra lista
             aristas_ordenadas.append(self.lista_aristas[arista])
-        
+
 
         aristas_ordenadas.sort(key=attrgetter('peso'))               #Ordenamos la lista en base el peso
-        vertices = list(self.lista_vertices.values())              #Lista de vertices
+        vertices = list(self.lista_vertices.values())                #Lista de vertices
 
         for arista in aristas_ordenadas:
-            if busqueda(lista_padres, vertices.index(self.lista_vertices[arista.origen])) is not busqueda(lista_padres, vertices.index(self.lista_vertices[arista.destino])): #Si los vertices no tienen la misma raíz                                  
+            if busqueda(lista_padres, vertices.index(self.lista_vertices[arista.origen])) is not busqueda(lista_padres, vertices.index(self.lista_vertices[arista.destino])): #Si los vertices no tienen la misma raíz
                 grafiquita.agregarArista(arista.id, arista.origen, arista.destino, arista.peso)     #Agregamos la arista
                 lista_padres= union(lista_padres, vertices.index(self.lista_vertices[arista.origen]), vertices.index(self.lista_vertices[arista.destino])) #Reacomodamos las raices
                 peso_total += arista.peso                                                           #Sumamos el peso de la arista al peso total del árbol
             if  grafiquita.numero_aristas == total_vertices - 1:            #Si el número total de aristas es igual al el numero de vertices menos uno, entonces ya tenemos el arbol de expansion
                 break
-        
-        
-        if grafiquita.numero_aristas is not total_vertices - 1:            #Si la cantidad de aristas no cumple con ser #vertices-1, entonces debe ser un bosque. 
+
+
+        if grafiquita.numero_aristas is not total_vertices - 1:            #Si la cantidad de aristas no cumple con ser #vertices-1, entonces debe ser un bosque.
             bosque = True
 
         if bosque:                                          #Imprimimos el arbol o bosque
-            print("El bosque es: ")  
+            print("\nEl bosque es: ")
         else:
-            print("El árbol de minima expansion es: ")     
+            print("\nEl árbol de mínima expansión es: ")
         for v in grafiquita:
             print(v)
-        
-        if bosque:                                      #Imprimimos el peso total del arbol o bosque
-            print("Peso del bosque: ", peso_total)
-        else:
-            print("Peso del árbol: ", peso_total)              
-        del grafiquita
-        
 
+        if bosque:                                      #Imprimimos el peso total del arbol o bosque
+            print("\nPeso del bosque: ", peso_total)
+        else:
+            print("\nPeso del árbol: ", peso_total)
+
+        del grafiquita
+
+    def prim(self):
+        grafiquita = Grafica()
+        lista_actuales = []
+        lista_actuales.append(self.lista_vertices[list(self.lista_vertices.keys())[0]])
+        lista_actuales[0].bandera = 1
+        visitados = 1
+        bosque = False
+        peso_total = 0
+
+        for vertice in self.lista_vertices:                     # Copiamos los vertices de la grafica original en lo que sera nuestro
+            grafiquita.agregarVertice(vertice)                  # árbol de minima expansion o bosque.
+
+        while(visitados < grafiquita.numero_vertices):
+            lista_vecinos = []
+
+            for vertice in lista_actuales:
+                for vecino in self.lista_vertices[vertice.id].lista_conectado:
+
+                    if self.lista_vertices[vecino].bandera == 0:
+                        lista_vecinos.append(self.buscarArista(vertice.id, vecino))
+
+            # Segmento para bosques
+            if len(lista_vecinos) == 0:
+                bosque = True
+                lista_actuales = []
+
+                for vertice in self.lista_vertices:                     #Revisa los vertices de la grafica para encontrar uno que no hay sido visitado.
+                    if self.lista_vertices[vertice].bandera == 0:        #Agregamos el primero que encuentra a frontera
+                        self.lista_vertices[vertice].bandera = 1
+                        lista_actuales.append(self.lista_vertices[vertice])
+                        visitados += 1
+                        break
+
+                continue
+
+            min = pesoMinimo(lista_vecinos)
+
+            grafiquita.agregarArista(min.id, min.origen, min.destino, min.peso)
+            peso_total += min.peso
+
+            # Solo uno tiene bandera = 0
+            if self.lista_vertices[min.origen].bandera == 0:
+                self.lista_vertices[min.origen].bandera = 1
+                lista_actuales.append(self.lista_vertices[min.origen])
+
+            elif self.lista_vertices[min.destino].bandera == 0:
+                self.lista_vertices[min.destino].bandera = 1
+                lista_actuales.append(self.lista_vertices[min.destino])
+
+            visitados += 1
+
+        #Imprimimos el árbol o bosque
+        if bosque:
+            print("\nEl bosque es: ")
+        else:
+            print("\nEl árbol de mínima expansión es: ")
+
+        for v in grafiquita:
+            print(v)
+
+        # Imprimimos el peso total del arbol o bosque
+        if bosque:
+            print("\nPeso del bosque: ", peso_total)
+        else:
+            print("\nPeso del árbol: ", peso_total)
+
+        del grafiquita
+        self.restablecerVertices()
+
+        return
+
+
+'''
+Funciones auxiliares para algoritmo de Kruskal
+'''
 def busqueda(lista, indice):
     if(lista[indice] == indice): return indice
     return busqueda(lista, lista[indice])
@@ -661,3 +736,15 @@ def busqueda(lista, indice):
 def union(lista, u, v):
     lista[busqueda(lista, u)] = busqueda(lista, v)
     return lista
+
+'''
+Función auxiliar para algoritmo de Prim
+'''
+def pesoMinimo(lista_aristas):
+    menor = lista_aristas[0]
+    lista_aristas = lista_aristas[1:]
+
+    for a in lista_aristas:
+        if a.peso < menor.peso: menor = a
+
+    return menor
