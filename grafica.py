@@ -727,25 +727,17 @@ class Grafica:
 
         return
 
-    def pruferEncode(self):
-        self.lista_vertices = dict(sorted(self.lista_vertices.items(), key=lambda item: item[0]))
-        copia = self.copiar()
-        S = []
-
-        if (len(copia.lista_vertices) > 2):
-
-            for vertice in self.lista_vertices:
-
-                if(len(copia.lista_vertices[vertice].lista_conectado) == 1):
-                    S.append(copia.lista_vertices[vertice].lista_conectado[0])
-                    copia.eliminarVertice(self.lista_vertices[vertice].id)
-                    print(S)
-                    if(len(copia.lista_vertices) == 2):
-                        return S
-        else:
-            return S
-
+#----------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------
     def pruferDecode(self):
+        '''
+                        PRIMER EXAMEN ANALISIS DE REDES - EMANUEL VIDAL LÓPEZ
+
+                        El decodificador de Prüfer construye un grafo utilizando una lista de nodos y una secuencia de Prüfer.
+                        Se permite que el usuario introduzca ambas por medio de la terminal para la realización del algoritmo.
+
+        '''
 
         # El usuario introduce la lista de nodos que tiene su gráfica. Se imprime error si L es menor a 3
         L = []
@@ -795,7 +787,7 @@ class Grafica:
 
         L.sort() # Se ordena de menor a mayor la lista de nodos para no tener que buscar el menor cada iteración
 
-        while len(L) > 2:   # La sección de iteración del algoritmo termina cuando L tiene 2 elementos y S está vacío, por lo que se puede revisar cualquiera de estas dos condiciones
+        while (len(L) > 2 and len(S) > 0):   # La sección de iteración del algoritmo termina cuando L tiene 2 elementos y S está vacío.
             if L[i] not in S:
                 k = L[i]
                 T.agregarArista('e'+str(i), str(S[0]), str(k))
@@ -814,7 +806,9 @@ class Grafica:
 
         del T
 
-
+#----------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------
 '''
 Funciones auxiliares para algoritmo de Kruskal
 '''
