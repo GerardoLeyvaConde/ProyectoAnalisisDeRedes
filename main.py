@@ -24,14 +24,14 @@ def menu(grafica, copia):
         os.system("cls") # WINDOWS
 
         print("-------------------------- MENÚ --------------------------")
-        print("1) Agregar")
-        print("2) Eliminar")
-        print("3) Buscar")
-        print("4) Grado de un Nodo")
-        print("5) Número total")
-        print("6) Vaciar")
-        print("7) Copiar")
-        print("8) Cargar copia")
+        print("1) Decodificador de Prüfer Emanuel Vidal")
+        #print("2) Eliminar")
+        #print("3) Buscar")
+        #print("4) Grado de un Nodo")
+        #print("5) Número total")
+        #print("6) Vaciar")
+        #print("7) Copiar")
+        #print("8) Cargar copia")
         if(len(grafica.lista_vertices) != 0): print("9) Tareas")
 
         print("0) Salir")
@@ -52,7 +52,9 @@ def menu(grafica, copia):
                 print("\nSelecciona una opción válida")
 
         if opcion == 0: return
-        elif opcion == 1: menu_agregar(grafica)
+        elif opcion == 1:
+            grafica.pruferDecode()
+            input("Presione ENTER para continuar...")
         elif opcion == 2: menu_eliminar(grafica)
         elif opcion == 3: menu_buscar(grafica)
         elif opcion == 4: menu_grado(grafica)
@@ -313,9 +315,10 @@ def subirGrafica(graph):
         if lineas:
             a= lineas[0]
             b= lineas[1]
-            c= lineas[2]
-            lineas= lineas[3:]
-            graph.agregarArista("e"+str(i), a, b, int(c))
+            #c= lineas[2]
+            lineas= lineas[2:]
+            #graph.agregarArista("e"+str(i), a, b, int(c))
+            graph.agregarArista("e"+str(i), a, b)
             i+= 1
 
     archivo.close()
@@ -334,12 +337,13 @@ def menu_tareas(grafica):
         print("1) Verificar si grafica es bipartita")
         print("2) Buscar paseo de Euler (algoritmo de Fleury)")
         print("3) Buscar árbol de expansión")
+        print("4) Decodificador Prüfer Emanuel")
 
         print("0) Regresar")
 
-        while sub_opcion not in range(4):
+        while sub_opcion not in range(5):
             sub_opcion = pedirOpcion()
-            if (sub_opcion not in range(4)):
+            if (sub_opcion not in range(5)):
                 print("\nSelecciona una opción válida")
 
         if sub_opcion == 0: return
@@ -352,8 +356,16 @@ def menu_tareas(grafica):
         elif sub_opcion == 3:
             menu_expansion(grafica)
 
+        elif sub_opcion == 4:
+            grafica.pruferDecode()
 
-        if sub_opcion != 3: input("\nPresione ENTER para continuar...")
+            #if (len(s) > 0): print("S: ", s)
+            #else: print("No hay al menos 3 vértices en la gráfica")
+
+            #print(s)
+
+
+        if sub_opcion != 3: input("\nPresione ENTER para continuar...") # No tocar
         sub_opcion = -1
 
 def menu_expansion(grafica):

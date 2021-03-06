@@ -9,7 +9,7 @@ class Vertice:
     def __init__(self, clave):
         self.id= clave              #Identificador del vertice
         self.grado= 0               #Grado del vertice
-        self.lista_conectado= []    #Lista de los verices a los que esta conectado el vertice
+        self.lista_conectado= []    #Lista de los vértices a los que esta conectado el vértice
         self.color= -1              #Variable utlizada para el algoritmo de Bipartita: Asiga un color al nodo
         self.bandera= 0             #Indica si el nodo fue visitado o no
 
@@ -606,6 +606,8 @@ class Grafica:
         del grafiquita
         self.restablecerVertices()
         return
+
+
     """
     Algoritmo que busca el árbol de minima expansion en una grafica conexa.
     """
@@ -724,6 +726,93 @@ class Grafica:
         self.restablecerVertices()
 
         return
+
+    def pruferEncode(self):
+        self.lista_vertices = dict(sorted(self.lista_vertices.items(), key=lambda item: item[0]))
+        copia = self.copiar()
+        S = []
+
+        if (len(copia.lista_vertices) > 2):
+
+            for vertice in self.lista_vertices:
+
+                if(len(copia.lista_vertices[vertice].lista_conectado) == 1):
+                    S.append(copia.lista_vertices[vertice].lista_conectado[0])
+                    copia.eliminarVertice(self.lista_vertices[vertice].id)
+                    print(S)
+                    if(len(copia.lista_vertices) == 2):
+                        return S
+        else:
+            return S
+
+    def pruferDecode(self):
+
+        # El usuario introduce la lista de nodos que tiene su gráfica. Se imprime error si L es menor a 3
+        L = []
+        print("\nIntroduzca la lista de vértices en su gráfica:\nPresionar ENTER para terminar de añadir nodos...")
+        while(True):
+            nodo = input(':')
+            if nodo == '': break
+            L.append(nodo)
+
+        if len(L) < 3:
+            print("Se esperaba que su lista de vértices fuera mayor a 2...\n")
+            return
+
+        print("\nL: ", L)
+
+
+        # El usuario introduce la secuencia de Prüfer de la cual se construirá la gráfica. Se imprime error si S es diferente de N - 2
+        S = []
+        print("\nIntroduzca la secuencia de Prüfer:\nPresionar ENTER para terminar de añadir nodos...")
+        while(True):
+            nodo = input(':')
+            if nodo == '': break
+            if str(nodo) not in L:
+                print("Se encontró un elemento en la secuencia de Prüfer que no está en la lista de vértices de la gráfica")
+                print("Se introdujo: ", nodo)
+                print("L: ", L)
+                return
+            S.append(nodo)
+
+            if len(S) > len(L) - 2:
+                print("Se esperaba que la secuencia de Prüfer fuera de tamaño L - 2...\n")
+                return
+
+        if len(S) < len(L) - 2:
+            print("Se esperaba que la secuencia de Prüfer fuera de tamaño L - 2...\n")
+            return
+
+        print("\nS: ", S)
+
+
+        T = Grafica()
+        i = 0
+
+        # Se comienza con una gráfica con todas los vértices que introduce el usuario (L) sin aristas
+        for vertice in L:
+            T.agregarVertice(str(vertice))
+
+        L.sort() # Se ordena de menor a mayor la lista de nodos para no tener que buscar el menor cada iteración
+
+        while len(L) > 2:   # La sección de iteración del algoritmo termina cuando L tiene 2 elementos y S está vacío, por lo que se puede revisar cualquiera de estas dos condiciones
+            if L[i] not in S:
+                k = L[i]
+                T.agregarArista('e'+str(i), str(S[0]), str(k))
+                S.remove(S[0])
+                L.remove(k)
+                i = 0       # Se reinicia el iterador a 0 para que pueda comenzar de nuevo con su búsqueda
+            else: i += 1
+
+        T.agregarArista('e'+str(len(L) - 1), str(L[0]), str(L[1]))  # Una vez que la iteración termina, se tienen 2 elementos en L, los cuales debemos unir con una arista y agregar a la gráfica
+
+
+        # Imprimimos la gráfica resultante
+        print("\n\nGRÁFICA RESULTANTE\n")
+        for v in T:
+            print(v)
+
+        del T
 
 
 '''
