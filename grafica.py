@@ -796,7 +796,8 @@ class Grafica:
                 i = 0       # Se reinicia el iterador a 0 para que pueda comenzar de nuevo con su búsqueda
             else: i += 1
 
-        T.agregarArista('e'+str(len(L) - 1), str(L[0]), str(L[1]))  # Una vez que la iteración termina, se tienen 2 elementos en L, los cuales debemos unir con una arista y agregar a la gráfica
+        T.agregarArista('e'+str(len(L) - 1), str(L[0]), str(L[1]))  # Una vez que la iteración termina, se tienen 2 elementos en L,
+                                                                    # los cuales debemos unir con una arista y agregar a la gráfica
 
 
         # Imprimimos la gráfica resultante
