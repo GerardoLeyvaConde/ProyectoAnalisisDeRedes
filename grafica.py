@@ -745,7 +745,10 @@ class Grafica:
         while(True):
             nodo = input(':')
             if nodo == '': break
-            L.append(nodo)
+            if nodo.isnumeric():
+                L.append(int(nodo))
+            else:
+                L.append(nodo)
 
         if len(L) < 3:
             print("Se esperaba que su lista de vértices fuera mayor a 2...\n")
@@ -760,12 +763,22 @@ class Grafica:
         while(True):
             nodo = input(':')
             if nodo == '': break
-            if str(nodo) not in L:
-                print("Se encontró un elemento en la secuencia de Prüfer que no está en la lista de vértices de la gráfica")
-                print("Se introdujo: ", nodo)
-                print("L: ", L)
-                return
-            S.append(nodo)
+            if nodo.isnumeric():
+                if int(nodo) not in L:
+                    print("Se encontró un elemento en la secuencia de Prüfer que no está en la lista de vértices de la gráfica")
+                    print("Se introdujo: ", nodo)
+                    print("L: ", L)
+                    return
+
+                S.append(int(nodo))
+            else:
+                if str(nodo) not in L:
+                    print("Se encontró un elemento en la secuencia de Prüfer que no está en la lista de vértices de la gráfica")
+                    print("Se introdujo: ", nodo)
+                    print("L: ", L)
+                    return
+
+                S.append(nodo)
 
             if len(S) > len(L) - 2:
                 print("Se esperaba que la secuencia de Prüfer fuera de tamaño L - 2...\n")
@@ -785,7 +798,8 @@ class Grafica:
         for vertice in L:
             T.agregarVertice(str(vertice))
 
-        L.sort() # Se ordena de menor a mayor la lista de nodos para no tener que buscar el menor cada iteración
+        # Permitimos ints y strings por lo que usamos una función lambda para poder ordenar (numeros < letras)
+        L.sort(key=lambda v: (isinstance(v, str), v)) # Se ordena de menor a mayor la lista de nodos para no tener que buscar el menor cada iteración
 
         while (len(L) > 2 and len(S) > 0):   # La sección de iteración del algoritmo termina cuando L tiene 2 elementos y S está vacío.
             if L[i] not in S:
