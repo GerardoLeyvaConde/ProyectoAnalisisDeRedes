@@ -315,7 +315,7 @@ def subirGrafica(graph):
             b= lineas[1]
             c= lineas[2]
             lineas= lineas[3:]
-            graph.agregarArista("e"+str(i), a, b, int(c))
+            graph.agregarArista("e"+str(i), a, b, int(c), True)
             i+= 1
 
     archivo.close()
@@ -334,12 +334,13 @@ def menu_tareas(grafica):
         print("1) Verificar si grafica es bipartita")
         print("2) Buscar paseo de Euler (algoritmo de Fleury)")
         print("3) Buscar árbol de expansión")
+        print("4) Buscar arborescencia (Dijkstra)")
 
         print("0) Regresar")
 
-        while sub_opcion not in range(4):
+        while sub_opcion not in range(5):
             sub_opcion = pedirOpcion()
-            if (sub_opcion not in range(4)):
+            if (sub_opcion not in range(5)):
                 print("\nSelecciona una opción válida")
 
         if sub_opcion == 0: return
@@ -351,6 +352,9 @@ def menu_tareas(grafica):
 
         elif sub_opcion == 3:
             menu_expansion(grafica)
+
+        elif sub_opcion == 4:
+            grafica.dijkstraGeneral('a')
 
 
         if sub_opcion != 3: input("\nPresione ENTER para continuar...")
