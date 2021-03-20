@@ -715,6 +715,7 @@ class Grafica:
             visitados += 1
 
         #Imprimimos el árbol o bosque
+        '''
         if bosque:
             print("\nEl bosque es: ")
         else:
@@ -730,9 +731,10 @@ class Grafica:
             print("\nPeso del árbol: ", peso_total)
 
         del grafiquita
-        self.restablecerVertices()
+        '''
 
-        return
+        self.restablecerVertices()
+        return (grafiquita, peso_total, bosque)
 
 
     def dijkstra(self, inicio):
@@ -797,6 +799,31 @@ class Grafica:
             for a in aristas:
 
                 if grafiquita.lista_vertices[a.origen].peso_minimo + a.peso < grafiquita.lista_vertices[a.destino].peso_minimo:
+
+                    if grafiquita.lista_vertices[a.destino].padre is None:
+                        grafiquita.lista_vertices[a.origen].padre = None
+
+                    # Identificación de ciclos
+                    ancestro = grafiquita.lista_vertices[a.origen].padre
+
+                    while True:
+
+                        if ancestro == a.destino:
+
+                            # Ciclo positivo
+                            if grafiquita.lista_vertices[a.origen].peso_minimo - grafiquita.lista_vertices[ancestro].peso_minimo + a.peso >= 0:
+                                break
+
+                            # Ciclo negativo
+                            else:
+                                print("\nExiste un ciclo negativo por lo que no se puede corregir")
+                                return
+
+                        elif ancestro == None:
+                            break
+
+                        ancestro = grafiquita.lista_vertices[ancestro].padre
+
                     fin = False
 
                     auxrista = self.buscarArista(grafiquita.lista_vertices[a.destino].padre, a.destino, True)

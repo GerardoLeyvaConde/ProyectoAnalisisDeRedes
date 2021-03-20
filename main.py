@@ -391,7 +391,22 @@ def menu_expansion(grafica):
             grafica.kruskal()
 
         elif exp == 4:
-            grafica.prim()
+            grafica, peso, bosque = grafica.prim()
+
+            #Imprimimos el árbol o bosque
+            if bosque:
+                print("\nEl bosque es: ")
+            else:
+                print("\nEl árbol de mínima expansión es: ")
+
+            for v in grafica:
+                print(v)
+
+            # Imprimimos el peso total del arbol o bosque
+            if bosque:
+                print("\nPeso del bosque: ", peso)
+            else:
+                print("\nPeso del árbol: ", peso)
 
         input("\nPresione ENTER para continuar...")
         exp = -1
