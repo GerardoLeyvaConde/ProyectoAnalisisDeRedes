@@ -381,18 +381,20 @@ class Grafica:
                 self.lista_vertices[vertice].color= 1           #Se le asigna el color 1
                 if not self.bipartita(vertice):                 #Se llama a nuestra función auxliar que marcar a sus vertices vecinos. Si la funcion auxiliar regresa True el algoritmo prosigue
                     self.restablecerVertices()                  #En caso contrario establecemos las variables color y bandera a su valor original
-                    return False                                #Regresa False y el algorimo concluye
+                    return (lista_u, lista_u, False)                                #Regresa False y el algorimo concluye
             if self.lista_vertices[vertice].color== 1:          #Si el vertice es de color 1 lo agrega a lista_v
                 lista_v.append(self.lista_vertices[vertice].id)
             elif self.lista_vertices[vertice].color== 0:        #Si el vertice es de color 0 lo agrega a lista_ui
                 lista_u.append(self.lista_vertices[vertice].id)
             self.lista_vertices[vertice].bandera= 1             #Asigna bandera a 1 lo que significa que el vertice ya fue visitado
 
+        '''
         print("\nEs bipartita")                                   #Si el algorimo llego hasta aqui, significa que la grafica es bipartita
         print("V: %s"%(lista_v))                                #Imprime las listas u y v. Restablece los vertices y regresa True
         print("U: %s"%(lista_u))
+        '''
         self.restablecerVertices()
-        return True
+        return (lista_u, lista_u, True)     
 
     """
     Función que determina si la grafica es conexa.
@@ -504,11 +506,11 @@ class Grafica:
 
         if impares != 0 and impares != 2:   #Si en la grafica no hay 0 o 2 vertices con grado impar, entonces no se cumple el algoritmo.
             print("\nError: La cantidad de nodos de grado impar no cumple.")
-            return False
+            return (cola, impares, False)
 
         if not copia.conexa():              #Si la grafica no es conexa, no se cumple el algoritmo
             print("\nError: La grafica no es conexa.")
-            return False
+            return (cola, impares, False)
 
 
         if impares== 0:                                                                 #Si no hay ningun vertice de grado impar, vc y vp se asignan a cualquier vertice
@@ -536,15 +538,15 @@ class Grafica:
         while pila:
             cola.append(pila[-1])
             pila= pila[:-1]
-
+        '''
         if impares == 0:
             print("\nEl paseo de Euler es cerrado.")
 
         else:
             print("\nEl paseo de Euler es abierto.")
         print(cola)
-
-        return True
+        '''
+        return (cola, impares, True)
 
 
     """
@@ -604,6 +606,7 @@ class Grafica:
                     elif tipo == 1:
                         frontera.append(self.lista_vertices[vertice])
 
+        '''
         if bosque:
             print("\nEl bosque es:")
         else:
@@ -611,10 +614,9 @@ class Grafica:
 
         for v in grafiquita:
             print(v)
-
-        del grafiquita
+        '''
         self.restablecerVertices()
-        return
+        return (grafiquita, bosque)
     """
     Algoritmo que busca el árbol de minima expansion en una grafica conexa.
     """
@@ -648,6 +650,7 @@ class Grafica:
 
         if grafiquita.numero_aristas is not total_vertices - 1:            #Si la cantidad de aristas no cumple con ser #vertices-1, entonces debe ser un bosque.
             bosque = True
+        '''
 
         if bosque:                                          #Imprimimos el arbol o bosque
             print("\nEl bosque es: ")
@@ -660,8 +663,9 @@ class Grafica:
             print("\nPeso del bosque: ", peso_total)
         else:
             print("\nPeso del árbol: ", peso_total)
+        '''
 
-        del grafiquita
+        return (grafiquita, peso_total, bosque)
 
     def prim(self):
         grafiquita = Grafica()
@@ -782,10 +786,11 @@ class Grafica:
     def dijkstraGeneral(self, inicio):
         aristas = []
         grafiquita = self.dijkstra(inicio)
-
+        '''
         print("\nDijkstra original:")
         for v in grafiquita:
             print(v)
+        '''
 
         for arista in self.lista_aristas:
             if arista not in grafiquita.lista_aristas:
@@ -865,10 +870,14 @@ class Grafica:
             aristas.append(auxrista)
             aristas.sort(key=attrgetter('peso'))
 
+        '''
+
         print("\nDijkstra corregido:")
         for v in grafiquita:
             print(v) # A -(3)-> B
                      # A -(-5)-> C
+        '''
+        return grafiquita
 
 '''
 Funciones auxiliares para algoritmo de Kruskal
@@ -908,12 +917,3 @@ def sortear(lista_vertices, cola):
 
     return cola
 
-'''
-Función auxiliar para dijkstraGeneral
-'''
-def aloancho(lista_vertices, frontera, v):
-
-    for vertice in grafiquita.lista_vertices[v.id].lista_conectado:
-        if (grafiquita.lista_vertices[vertice] not in frontera) and (grafiquita.lista_vertices[vertice].bandera == 2):
-
-            frontera.append(grafiquita.lista_vertices[vertice])

@@ -22,6 +22,7 @@ def menu(grafica, copia):
     while (opcion != 0):
         #os.system("clear") # LINUX
         os.system("cls") # WINDOWS
+        
 
         print("-------------------------- MENÚ --------------------------")
         print("1) Agregar")
@@ -345,16 +346,44 @@ def menu_tareas(grafica):
 
         if sub_opcion == 0: return
         elif sub_opcion == 1:
-            if not grafica.esBipartita(): print("\nLa gráfica no es bipartita.")
+            lista_u, lista_v, bipartita = grafica.esBipartita()     #ruta: Paseo de euler. 
+                                                                    #cerrado: es 0 si es cerrado, varaible llamada impares en algoritmo.
+                                                                    #paseo: booleano que indica si el paseo existe o no.
+            if not bipartita: 
+                print("\nLa gráfica no es bipartita.")
+            else:
+                print("\nEs bipartita")                                   #Si el algorimo llego hasta aqui, significa que la grafica es bipartita
+                print("V: %s"%(lista_v))                                #Imprime las listas u y v. Restablece los vertices y regresa True
+                print("U: %s"%(lista_u))
 
         elif sub_opcion == 2:
-            if not grafica.Fleury(): print("\nNo es posible encontrar un paseo de Euler.")
+            
+            ruta, cerrado, paseo = grafica.Fleury()     #ruta: Paseo de euler. 
+                                                        #cerrado: es 0 si es cerrado, varaible llamada impares en algoritmo.
+                                                        #paseo: booleano que indica si el paseo existe o no.
+
+            if not paseo: 
+                print("\nNo es posible encontrar un paseo de Euler.")
+            else:
+                if cerrado == 0:
+                    print("\nEl paseo de Euler es cerrado.")
+
+                else:
+                    print("\nEl paseo de Euler es abierto.")
+                print(ruta)
 
         elif sub_opcion == 3:
             menu_expansion(grafica)
 
         elif sub_opcion == 4:
-            grafica.dijkstraGeneral('a')
+            print("\nDijkstra original:")
+            imprime_grafica(grafica, True)
+
+            grafica = grafica.dijkstraGeneral('a')
+
+            print("\nDijkstra corregido:")
+
+            imprime_grafica(grafica, True)
 
 
         if sub_opcion != 3: input("\nPresione ENTER para continuar...")
@@ -382,13 +411,41 @@ def menu_expansion(grafica):
 
         if exp == 0: return
         elif exp == 1:
-            grafica.busquedas(1)
+            grafica, bosque = grafica.busquedas(1)  #busqueda a lo ancho (1)
+
+            if bosque:
+                print("\nEl bosque es:")
+            else:
+                print("\nEl árbol de expansión es:")
+
+            imprime_grafica(grafica)
 
         elif exp == 2:
-            grafica.busquedas(0)
+            grafica, bosque = grafica.busquedas(0)  #busqueda a lo profundo (0)
+
+            if bosque:
+                print("\nEl bosque es:")
+            else:
+                print("\nEl árbol de expansión es:")
+
+            imprime_grafica(grafica)
 
         elif exp == 3:
-            grafica.kruskal()
+            grafica, peso, bosque = grafica.kruskal()
+
+            #Imprimimos el árbol o bosque
+            if bosque:
+                print("\nEl bosque es: ")
+            else:
+                print("\nEl árbol de mínima expansión es: ")
+
+            imprime_grafica(grafica)
+
+            # Imprimimos el peso total del arbol o bosque
+            if bosque:
+                print("\nPeso del bosque: ", peso)
+            else:
+                print("\nPeso del árbol: ", peso)
 
         elif exp == 4:
             grafica, peso, bosque = grafica.prim()
@@ -399,8 +456,7 @@ def menu_expansion(grafica):
             else:
                 print("\nEl árbol de mínima expansión es: ")
 
-            for v in grafica:
-                print(v)
+            imprime_grafica(grafica)
 
             # Imprimimos el peso total del arbol o bosque
             if bosque:
@@ -411,7 +467,54 @@ def menu_expansion(grafica):
         input("\nPresione ENTER para continuar...")
         exp = -1
 
+def imprime_grafica(grafica, dirigida = False):
+    if dirigida:
+        for v in grafica:
+            print(v)
+    else:
+        for v in grafica:
+            print(v)
+
+def graficaArchivo(grafica):  
+    #Parametros:
+    #d: dirigida
+    #n: no dirigida
+    #p: ponderada
+
+    archivo= open("grafica.txt")
+
+    lineas = archivo.readlines()
+    lineas = [line[:-1] for line in lineas]
+
+    parametros = lineas[0].split(',')
+    nombres = lineas[1].split(',')
+    lineas = [[num for num in line.split(',')] for line in lineas[2:]]
+    
+    archivo.close()
+
+    for elementos in nombres:
+        grafica.agregarVertice(elementos)
+
+    i= 0
+    for arista in lineas:
+        if 'p' in parametros:
+            if 'd' in parametros:
+                grafica.agregarArista("e"+str(i), arista[0], arista[1], int(arista[2]), True)
+            else:
+                grafica.agregarArista("e"+str(i), arista[0], arista[1], int(arista[2]))
+        else:
+            if 'd' in parametros:
+                grafica.agregarArista("e"+str(i), arista[0], arista[1], 0, True)
+            else:
+                grafica.agregarArista("e"+str(i), arista[0], arista[1])
+        i+= 1
+    
+
+    return grafica
+
+
 g = Grafica()
 c = Grafica()
-g = subirGrafica(g)
+#g = subirGrafica(g)
+g = graficaArchivo(g)
 menu(g, c)
