@@ -61,7 +61,7 @@ def menu(grafica, copia):
         elif opcion == 6: menu_vaciar(grafica)
         elif opcion == 7: copia= copiarGrafica(grafica)
         elif opcion == 8: grafica= copiarGrafica(copia)
-        elif opcion == 9: menu_tareas(grafica)
+        elif opcion == 9: grafica = menu_tareas(grafica)
 
         opcion = -1
 
@@ -344,7 +344,7 @@ def menu_tareas(grafica):
             if (sub_opcion not in range(5)):
                 print("\nSelecciona una opción válida")
 
-        if sub_opcion == 0: return
+        if sub_opcion == 0: return grafica
         elif sub_opcion == 1:
             lista_u, lista_v, bipartita = grafica.esBipartita()     #ruta: Paseo de euler.
                                                                     #cerrado: es 0 si es cerrado, varaible llamada impares en algoritmo.
@@ -376,17 +376,15 @@ def menu_tareas(grafica):
             menu_expansion(grafica)
 
         elif sub_opcion == 4:
-            print("\nDijkstra original:")
-            grafica = grafica.dijkstra('a')
-            
-            imprime_grafica(grafica, True)
+            inicio = input("Introduzca el vértice inicial: ")
 
-            grafica = grafica.dijkstraGeneral('a')
+            grafica = grafica.dijkstraGeneral(inicio)
 
-            print("\nDijkstra corregido:")
+            print("\nArborescencia:")
 
             imprime_grafica(grafica, True)
 
+            grafica.restablecerVertices()
 
         if sub_opcion != 3: input("\nPresione ENTER para continuar...")
         sub_opcion = -1
@@ -472,10 +470,10 @@ def menu_expansion(grafica):
 def imprime_grafica(grafica, dirigida = False):
     if dirigida:
         for v in grafica.lista_vertices:
-            for c in grafica.lista_vertices[v].lista_conectado:
-                for a in grafica.lista_aristas:
-                    if grafica.lista_aristas[a].origen == grafica.lista_vertices[v].id and grafica.lista_aristas[a].destino == c:
-                        print(grafica.lista_vertices[v].id, " -(", grafica.lista_aristas[a].peso,")->", c)
+
+            if grafica.lista_vertices[v].padre is not None:
+                arista = grafica.buscarArista(grafica.lista_vertices[v].padre, v)
+                print(grafica.lista_vertices[v].padre, " -(", arista.peso,")->", v)
 
     else:
         for v in grafica:

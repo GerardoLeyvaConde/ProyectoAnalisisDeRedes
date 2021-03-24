@@ -342,6 +342,8 @@ class Grafica:
         for vertice in self.lista_vertices:         #Para todos lo vertices
             self.lista_vertices[vertice].color= -1  #Regresamos a su valor predeterminado la variable color
             self.lista_vertices[vertice].bandera= 0 #Y a la variable bandera
+            self.lista_vertices[vertice].padre= None  #Regresamos a su valor predeterminado la variable color
+            self.lista_vertices[vertice].peso_minimo= 0 #Y a la variable bandera
 
     """
     Función auxiliar que ayuda a determinar si la grafica es bipartita,
@@ -394,7 +396,7 @@ class Grafica:
         print("U: %s"%(lista_u))
         '''
         self.restablecerVertices()
-        return (lista_u, lista_u, True)     
+        return (lista_u, lista_u, True)
 
     """
     Función que determina si la grafica es conexa.
@@ -753,7 +755,7 @@ class Grafica:
         # Primer paso del algoritmo de Dijkstra
         cola.append(inicio)                                   # Guardamos etiquetas de vértices
         grafiquita.lista_vertices[inicio].bandera = 1         # 1 es marca temporal, 2 marca definitiva
-        grafiquita.lista_vertices[inicio].padre = inicio      # Padre es si mismo
+        grafiquita.lista_vertices[inicio].padre = None        # Padre es None
 
         while cola:
             actual = cola[0]                                  # Obtenemos el primer elemento de la cola
@@ -786,11 +788,6 @@ class Grafica:
     def dijkstraGeneral(self, inicio):
         aristas = []
         grafiquita = self.dijkstra(inicio)
-        '''
-        print("\nDijkstra original:")
-        for v in grafiquita:
-            print(v)
-        '''
 
         for arista in self.lista_aristas:
             if arista not in grafiquita.lista_aristas:
@@ -802,6 +799,7 @@ class Grafica:
             fin = True
 
             for a in aristas:
+
 
                 if grafiquita.lista_vertices[a.origen].peso_minimo + a.peso < grafiquita.lista_vertices[a.destino].peso_minimo:
 
@@ -867,16 +865,11 @@ class Grafica:
 
                     break
             if fin: break
-            aristas.append(auxrista)
+
+            if auxrista is not None:
+                aristas.append(auxrista)
             aristas.sort(key=attrgetter('peso'))
 
-        '''
-
-        print("\nDijkstra corregido:")
-        for v in grafiquita:
-            print(v) # A -(3)-> B
-                     # A -(-5)-> C
-        '''
         return grafiquita
 
 '''
@@ -916,4 +909,3 @@ def sortear(lista_vertices, cola):
         cola[i] = lista_ordenada[i].id
 
     return cola
-
