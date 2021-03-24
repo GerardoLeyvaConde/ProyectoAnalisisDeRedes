@@ -22,7 +22,7 @@ def menu(grafica, copia):
     while (opcion != 0):
         #os.system("clear") # LINUX
         os.system("cls") # WINDOWS
-        
+
 
         print("-------------------------- MENÚ --------------------------")
         print("1) Agregar")
@@ -346,10 +346,10 @@ def menu_tareas(grafica):
 
         if sub_opcion == 0: return
         elif sub_opcion == 1:
-            lista_u, lista_v, bipartita = grafica.esBipartita()     #ruta: Paseo de euler. 
+            lista_u, lista_v, bipartita = grafica.esBipartita()     #ruta: Paseo de euler.
                                                                     #cerrado: es 0 si es cerrado, varaible llamada impares en algoritmo.
                                                                     #paseo: booleano que indica si el paseo existe o no.
-            if not bipartita: 
+            if not bipartita:
                 print("\nLa gráfica no es bipartita.")
             else:
                 print("\nEs bipartita")                                   #Si el algorimo llego hasta aqui, significa que la grafica es bipartita
@@ -357,12 +357,12 @@ def menu_tareas(grafica):
                 print("U: %s"%(lista_u))
 
         elif sub_opcion == 2:
-            
-            ruta, cerrado, paseo = grafica.Fleury()     #ruta: Paseo de euler. 
+
+            ruta, cerrado, paseo = grafica.Fleury()     #ruta: Paseo de euler.
                                                         #cerrado: es 0 si es cerrado, varaible llamada impares en algoritmo.
                                                         #paseo: booleano que indica si el paseo existe o no.
 
-            if not paseo: 
+            if not paseo:
                 print("\nNo es posible encontrar un paseo de Euler.")
             else:
                 if cerrado == 0:
@@ -377,6 +377,8 @@ def menu_tareas(grafica):
 
         elif sub_opcion == 4:
             print("\nDijkstra original:")
+            grafica = grafica.dijkstra('a')
+            
             imprime_grafica(grafica, True)
 
             grafica = grafica.dijkstraGeneral('a')
@@ -469,13 +471,17 @@ def menu_expansion(grafica):
 
 def imprime_grafica(grafica, dirigida = False):
     if dirigida:
-        for v in grafica:
-            print(v)
+        for v in grafica.lista_vertices:
+            for c in grafica.lista_vertices[v].lista_conectado:
+                for a in grafica.lista_aristas:
+                    if grafica.lista_aristas[a].origen == grafica.lista_vertices[v].id and grafica.lista_aristas[a].destino == c:
+                        print(grafica.lista_vertices[v].id, " -(", grafica.lista_aristas[a].peso,")->", c)
+
     else:
         for v in grafica:
             print(v)
 
-def graficaArchivo(grafica):  
+def graficaArchivo(grafica):
     #Parametros:
     #d: dirigida
     #n: no dirigida
@@ -489,7 +495,7 @@ def graficaArchivo(grafica):
     parametros = lineas[0].split(',')
     nombres = lineas[1].split(',')
     lineas = [[num for num in line.split(',')] for line in lineas[2:]]
-    
+
     archivo.close()
 
     for elementos in nombres:
@@ -508,7 +514,7 @@ def graficaArchivo(grafica):
             else:
                 grafica.agregarArista("e"+str(i), arista[0], arista[1])
         i+= 1
-    
+
 
     return grafica
 
