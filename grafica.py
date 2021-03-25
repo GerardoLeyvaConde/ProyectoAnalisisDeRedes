@@ -1,5 +1,7 @@
 import copy
 from operator import attrgetter
+import math
+
 class Vertice:
     """
     Constructor de la clase Vertice para crearlo con una clave
@@ -13,7 +15,7 @@ class Vertice:
         self.color= -1              # Variable utlizada para el algoritmo de Bipartita: Asiga un color al nodo
         self.bandera= 0             # Indica si el nodo fue visitado o no
         self.padre = None           # Vértice anterior a este
-        self.peso_minimo = 0   # Distancia del padre a este
+        self.peso_minimo = math.inf # Distancia del padre a este
 
     """
     Destructor de la clase Vertice
