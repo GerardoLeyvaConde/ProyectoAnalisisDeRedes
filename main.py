@@ -339,9 +339,9 @@ def menu_tareas(grafica):
 
         print("0) Regresar")
 
-        while sub_opcion not in range(5):
+        while sub_opcion not in range(6):
             sub_opcion = pedirOpcion()
-            if (sub_opcion not in range(5)):
+            if (sub_opcion not in range(6)):
                 print("\nSelecciona una opción válida")
 
         if sub_opcion == 0: return grafica
@@ -385,6 +385,21 @@ def menu_tareas(grafica):
             imprime_grafica(grafica, True)
 
             grafica.restablecerVertices()
+        elif sub_opcion == 5:
+            f, n = grafica.floyd()
+            j = 0
+            for i in range(len(f)):
+                if(i == j * grafica.numero_vertices):
+                    print("-----------------------RUTAS DE ", n[j], "-----------------------")
+                print("Ruta de ", n[j], " -> ", n[i-(j * grafica.numero_vertices)])
+                if(i >= (j + 1) * grafica.numero_vertices - 1):
+                    j += 1
+                if(f[i][0]):
+                    print(f[i][0])
+                    print("peso: ", f[i][1])
+                else:
+                    print("No hay ruta")
+                print("")
 
         if sub_opcion != 3: input("\nPresione ENTER para continuar...")
         sub_opcion = -1

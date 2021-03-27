@@ -873,6 +873,60 @@ class Grafica:
             aristas.sort(key=attrgetter('peso'))
 
         return grafiquita
+    
+    def floyd(self):
+        total_vertices= self.numero_vertices
+        distancias= [None] * total_vertices * total_vertices
+        rutas= [None] * total_vertices * total_vertices
+        nombres= [v for v in self.lista_vertices]
+        
+        for i in range(total_vertices):
+            for j in range(total_vertices):
+                arista = self.buscarArista(nombres[i], nombres[j], True)
+                if(i == j):
+                    distancias[i + i * total_vertices] =  0
+                    rutas[i + i * total_vertices] =  nombres[i]
+                elif(arista):
+                    distancias[j + i * total_vertices] =  arista.peso
+                    rutas[j + i * total_vertices] =  nombres[i]
+                else:
+                    distancias[j + i * total_vertices] =  math.inf
+                    rutas[j + i * total_vertices] =  None
+
+        for c in range(total_vertices):
+            for i in range(total_vertices):
+                for j in range(total_vertices):
+                    if(c == i or c == j):
+                        continue
+                    elif(distancias[c + i * total_vertices] + distancias[j + c * total_vertices] < distancias[j + i * total_vertices]):
+                        distancias[j + i * total_vertices] =  distancias[c + i * total_vertices] + distancias[j + c * total_vertices]
+                        rutas[j + i * total_vertices] =  rutas[j + c * total_vertices]
+        
+        free4all = [None] * total_vertices * total_vertices
+        for i in range(total_vertices):
+            for j in range(total_vertices):
+                aux = j
+                ruta_aux= list()
+                distancia_aux= 0
+                if (aux == i):
+                    #print("n: ", nombres[aux])
+                    ruta_aux.append(nombres[aux])
+                    distancia_aux += distancias[aux + i*total_vertices]
+                while(aux != i):
+                    #print("while: ", nombres[aux])
+                    if(rutas[j + i * total_vertices] is None):
+                        break
+                    ruta_aux.append(nombres[aux])
+                    distancia_aux += distancias[aux + i*total_vertices]
+                    aux = nombres.index(rutas[aux + i * total_vertices])
+                    if (aux == i):
+                        ruta_aux.append(nombres[aux])
+                        distancia_aux += distancias[aux + i*total_vertices]
+                #input(ruta_aux)
+                ruta_aux.reverse()
+                free4all[j + i * total_vertices] = (ruta_aux, distancia_aux)
+                        
+        return (free4all, nombres)
 
 '''
 Funciones auxiliares para algoritmo de Kruskal
