@@ -206,6 +206,7 @@ def menu_grado(grafica):
 
     # Función obtener grado de un Nodo
     id= input("Introduce el id del nodo: ")
+    print(grafica.gradoVertice(id))
     if grafica.gradoVertice(id) >= 0:
         print("El grado del nodo %s es: %s"%(id, grafica.gradoVertice(id)))
     else:
@@ -378,28 +379,39 @@ def menu_tareas(grafica):
         elif sub_opcion == 4:
             inicio = input("Introduzca el vértice inicial: ")
 
-            grafica = grafica.dijkstraGeneral(inicio)
+            grafica, c, p = grafica.dijkstraGeneral(inicio)
+            if(p < 0):
+                print("\nExiste un ciclo negativo por lo que no se puede corregir")
+                print("Ruta del ciclo:")
+                print(c)
+                print("Longitud: ", p)
+            else: 
+                print("\nArborescencia:")
 
-            print("\nArborescencia:")
+                imprime_grafica(grafica, True)
 
-            imprime_grafica(grafica, True)
-
-            grafica.restablecerVertices()
+                grafica.restablecerVertices()
         elif sub_opcion == 5:
-            f, n = grafica.floyd()
-            j = 0
-            for i in range(len(f)):
-                if(i == j * grafica.numero_vertices):
-                    print("-----------------------RUTAS DE ", n[j], "-----------------------")
-                print("Ruta de ", n[j], " -> ", n[i-(j * grafica.numero_vertices)])
-                if(i >= (j + 1) * grafica.numero_vertices - 1):
-                    j += 1
-                if(f[i][0]):
-                    print(f[i][0])
-                    print("peso: ", f[i][1])
-                else:
-                    print("No hay ruta")
-                print("")
+            f, n, c = grafica.floyd()
+            if(c):
+                print("Hay un ciclo negativo")
+                print("Ruta del ciclo: ")
+                print(f)
+                print("Longitud: ", n)
+            else:
+                j = 0
+                for i in range(len(f)):
+                    if(i == j * grafica.numero_vertices):
+                        print("-----------------------RUTAS DE ", n[j], "-----------------------")
+                    print("Ruta de ", n[j], " -> ", n[i-(j * grafica.numero_vertices)])
+                    if(i >= (j + 1) * grafica.numero_vertices - 1):
+                        j += 1
+                    if(f[i][0]):
+                        print(f[i][0])
+                        print("Peso: ", f[i][1])
+                    else:
+                        print("No hay ruta")
+                    print("")
 
         if sub_opcion != 3: input("\nPresione ENTER para continuar...")
         sub_opcion = -1
@@ -486,9 +498,9 @@ def imprime_grafica(grafica, dirigida = False):
     if dirigida:
         for v in grafica.lista_vertices:
 
-            if grafica.lista_vertices[v].padre is not None:
-                arista = grafica.buscarArista(grafica.lista_vertices[v].padre, v)
-                print(grafica.lista_vertices[v].padre, " -(", arista.peso,")->", v)
+            if grafica.lista_vertices[v].lista_entrantes:
+                arista = grafica.buscarArista(grafica.lista_vertices[v].lista_entrantes[0], v)
+                print(grafica.lista_vertices[v].lista_entrantes[0], " -(", arista.peso,")->", v)
 
     else:
         for v in grafica:
@@ -518,12 +530,12 @@ def graficaArchivo(grafica):
     for arista in lineas:
         if 'p' in parametros:
             if 'd' in parametros:
-                grafica.agregarArista("e"+str(i), arista[0], arista[1], int(arista[2]), True)
+                grafica.agregarArista("e"+str(i), arista[0], arista[1], int(arista[2]))
             else:
                 grafica.agregarArista("e"+str(i), arista[0], arista[1], int(arista[2]))
         else:
             if 'd' in parametros:
-                grafica.agregarArista("e"+str(i), arista[0], arista[1], 0, True)
+                grafica.agregarArista("e"+str(i), arista[0], arista[1], 0)
             else:
                 grafica.agregarArista("e"+str(i), arista[0], arista[1])
         i+= 1
@@ -531,9 +543,8 @@ def graficaArchivo(grafica):
 
     return grafica
 
-
-g = Grafica()
-c = Grafica()
+g = Grafica(True)
 #g = subirGrafica(g)
 g = graficaArchivo(g)
+c= Grafica(True)
 menu(g, c)
