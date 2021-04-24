@@ -431,9 +431,9 @@ def menu_expansion(grafica):
 
         print("0) Regresar")
 
-        while exp not in range(5):
+        while exp not in range(6):
             exp = pedirOpcion()
-            if (exp not in range(5)):
+            if (exp not in range(6)):
                 print("\nSelecciona una opción válida")
 
         if exp == 0: return
@@ -491,6 +491,12 @@ def menu_expansion(grafica):
             else:
                 print("\nPeso del árbol: ", peso)
 
+        elif exp == 5:
+            grafica= grafica.AlgoritmoFordFulkerson()
+            for a in grafica.lista_aristas:
+                print(grafica.lista_aristas[a])
+            print("Flujo: ", grafica.peso_grafica)
+
         input("\nPresione ENTER para continuar...")
         exp = -1
 
@@ -511,6 +517,7 @@ def graficaArchivo(grafica):
     #d: dirigida
     #n: no dirigida
     #p: ponderada
+    #f: flujo
 
     archivo= open("grafica.txt")
 
@@ -523,11 +530,22 @@ def graficaArchivo(grafica):
 
     archivo.close()
 
-    for elementos in nombres:
-        grafica.agregarVertice(elementos)
+    if 'f' in parametros:
+        for elementos in nombres:
+            if elementos == '+':
+                grafica.agregarVertice(nombres[nombres.index(elementos) - 1], elementos) 
+                grafica.lista_vertices[nombres[nombres.index(elementos) - 1]].color = '+'
+            elif elementos == '-':
+                grafica.agregarVertice(nombres[nombres.index(elementos) - 1], elementos) 
+                grafica.lista_vertices[nombres[nombres.index(elementos) - 1]].color = '-'
+            else:
+                grafica.agregarVertice(elementos)
+    else:
+        for elementos in nombres:
+            grafica.agregarVertice(elementos)
 
     i= 0
-    for arista in lineas:
+    for arista in lineas: 
         if 'p' in parametros:
             if 'd' in parametros:
                 grafica.agregarArista("e"+str(i), arista[0], arista[1], int(arista[2]))
@@ -540,6 +558,11 @@ def graficaArchivo(grafica):
                 grafica.agregarArista("e"+str(i), arista[0], arista[1])
         i+= 1
 
+    grafica.lista_vertices["a"].color = '+'
+    grafica.lista_vertices["e"].color = '-'
+
+    a =grafica.buscarArista("c", "f")
+    grafica.lista_aristas[a.id].peso_min = 5
 
     return grafica
 
