@@ -340,9 +340,9 @@ def menu_tareas(grafica):
 
         print("0) Regresar")
 
-        while sub_opcion not in range(6):
+        while sub_opcion not in range(7):
             sub_opcion = pedirOpcion()
-            if (sub_opcion not in range(6)):
+            if (sub_opcion not in range(7)):
                 print("\nSelecciona una opción válida")
 
         if sub_opcion == 0: return grafica
@@ -412,6 +412,11 @@ def menu_tareas(grafica):
                     else:
                         print("No hay ruta")
                     print("")
+
+        elif sub_opcion == 6:
+            grafica = grafica.flujoCosteMinimoPrimal()
+            print("Coste minimo: ", grafica.costo)
+            print("flujo: ", grafica.peso_grafica)
 
         if sub_opcion != 3: input("\nPresione ENTER para continuar...")
         sub_opcion = -1
@@ -559,10 +564,32 @@ def graficaArchivo(grafica):
         i+= 1
 
     grafica.lista_vertices["a"].color = '+'
-    grafica.lista_vertices["e"].color = '-'
+    grafica.lista_vertices["g"].color = '-'
 
+    a =grafica.buscarArista("a", "b")
+    grafica.lista_aristas[a.id].costo = 15
+    a =grafica.buscarArista("a", "c")
+    grafica.lista_aristas[a.id].costo = 9
+    a =grafica.buscarArista("a", "d")
+    grafica.lista_aristas[a.id].costo = 7
+    a =grafica.buscarArista("b", "e")
+    grafica.lista_aristas[a.id].costo = 7
+    a =grafica.buscarArista("c", "b")
+    grafica.lista_aristas[a.id].costo = 3
+    a =grafica.buscarArista("c", "d")
+    grafica.lista_aristas[a.id].costo = 8
     a =grafica.buscarArista("c", "f")
-    grafica.lista_aristas[a.id].peso_min = 5
+    grafica.lista_aristas[a.id].costo = 20
+    a =grafica.buscarArista("d", "f")
+    grafica.lista_aristas[a.id].costo = 3
+    a =grafica.buscarArista("e", "c")
+    grafica.lista_aristas[a.id].costo = 2
+    a =grafica.buscarArista("e", "g")
+    grafica.lista_aristas[a.id].costo = 20
+    a =grafica.buscarArista("f", "e")
+    grafica.lista_aristas[a.id].costo = 7
+    a =grafica.buscarArista("f", "g")
+    grafica.lista_aristas[a.id].costo = 13
 
     return grafica
 
