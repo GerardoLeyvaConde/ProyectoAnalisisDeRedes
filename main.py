@@ -340,9 +340,9 @@ def menu_tareas(grafica):
 
         print("0) Regresar")
 
-        while sub_opcion not in range(8):
+        while sub_opcion not in range(9):
             sub_opcion = pedirOpcion()
-            if (sub_opcion not in range(8)):
+            if (sub_opcion not in range(9)):
                 print("\nSelecciona una opción válida")
 
         if sub_opcion == 0: return grafica
@@ -419,6 +419,12 @@ def menu_tareas(grafica):
             print("flujo: ", grafica.peso_grafica)
         elif sub_opcion == 7:
             grafica = grafica.flujoConsumoMinimoDual(15)
+            for a in grafica.lista_aristas:
+                print(grafica.lista_aristas[a])
+            print("Coste minimo: ", grafica.costo)
+            print("flujo: ", grafica.peso_grafica)
+        elif sub_opcion == 8:
+            grafica = grafica.simplex()
             for a in grafica.lista_aristas:
                 print(grafica.lista_aristas[a])
             print("Coste minimo: ", grafica.costo)
@@ -569,35 +575,38 @@ def graficaArchivo(grafica):
                 grafica.agregarArista("e"+str(i), arista[0], arista[1])
         i+= 1
 
-    grafica.lista_vertices["a"].color = '+'
-    grafica.lista_vertices["g"].color = '-'
+    grafica.lista_vertices["a"].flujo = 5
+    grafica.lista_vertices["b"].flujo = 0
+    grafica.lista_vertices["c"].flujo = 3
+    grafica.lista_vertices["d"].flujo = -8
 
     a =grafica.buscarArista("a", "b")
-    grafica.lista_aristas[a.id].costo = 15
+    grafica.lista_aristas[a.id].costo = 1
     a =grafica.buscarArista("a", "c")
-    grafica.lista_aristas[a.id].costo = 9
-    a =grafica.buscarArista("a", "d")
-    grafica.lista_aristas[a.id].costo = 7
-    grafica.lista_aristas[a.id].peso_min = 2
-    a =grafica.buscarArista("b", "e")
-    grafica.lista_aristas[a.id].costo = 7
-    a =grafica.buscarArista("c", "b")
-    grafica.lista_aristas[a.id].costo = 3
-    a =grafica.buscarArista("c", "d")
-    grafica.lista_aristas[a.id].costo = 8
-    a =grafica.buscarArista("c", "f")
-    grafica.lista_aristas[a.id].costo = 20
-    a =grafica.buscarArista("d", "f")
-    grafica.lista_aristas[a.id].costo = 3
-    a =grafica.buscarArista("e", "c")
+    grafica.lista_aristas[a.id].costo = 4
+    a =grafica.buscarArista("b", "d")
     grafica.lista_aristas[a.id].costo = 2
-    a =grafica.buscarArista("e", "g")
-    grafica.lista_aristas[a.id].costo = 20
-    a =grafica.buscarArista("f", "e")
-    grafica.lista_aristas[a.id].costo = 7
-    grafica.lista_aristas[a.id].peso_min = 3
-    a =grafica.buscarArista("f", "g")
-    grafica.lista_aristas[a.id].costo = 13
+    a =grafica.buscarArista("c", "b")
+    grafica.lista_aristas[a.id].costo = -1
+    grafica.lista_aristas[a.id].peso_min = 1
+    a =grafica.buscarArista("c", "d")
+    grafica.lista_aristas[a.id].costo = 6
+    grafica.lista_aristas[a.id].peso_min = 1
+    #a =grafica.buscarArista("c", "d")
+    #grafica.lista_aristas[a.id].costo = 8
+    #a =grafica.buscarArista("c", "f")
+    #grafica.lista_aristas[a.id].costo = 20
+    #a =grafica.buscarArista("d", "f")
+    #grafica.lista_aristas[a.id].costo = 3
+    #a =grafica.buscarArista("e", "c")
+    #grafica.lista_aristas[a.id].costo = 2
+    #a =grafica.buscarArista("e", "g")
+    #grafica.lista_aristas[a.id].costo = 20
+    #a =grafica.buscarArista("f", "e")
+    #grafica.lista_aristas[a.id].costo = 7
+    #grafica.lista_aristas[a.id].peso_min = 3
+    #a =grafica.buscarArista("f", "g")
+    #grafica.lista_aristas[a.id].costo = 13
 
     return grafica
 

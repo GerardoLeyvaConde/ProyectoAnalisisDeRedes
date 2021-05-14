@@ -8,7 +8,7 @@ class Vertice:
 
     @param clave: un String, Int o Float para identificar al vertice
     """
-    def __init__(self, clave):
+    def __init__(self, clave, flujo = 0):
         self.id= clave              # Identificador del vertice
         self.grado= 0               # Grado del vertice
         self.lista_entrantes= []    # Lista de los verices a los que esta conectado el vertice
@@ -19,6 +19,7 @@ class Vertice:
         self.peso_minimo = math.inf # Distancia del padre a este
         self.peso_max = 0
         self.peso_actual = math.inf
+        self.flujo = flujo
 
     """
     Destructor de la clase Vertice
@@ -171,13 +172,14 @@ class Grafica:
 
     @return:      True o False si se agrego o no el vertice.
     """
-    def agregarVertice(self, clave, tipo= None):
+    def agregarVertice(self, clave, tipo= None, flujo = 0):
         if clave not in self.lista_vertices:                #Revisa si existe el vertice en la grafica
             self.numero_vertices= self.numero_vertices+ 1   #Sumamos uno al numereot total de vertices
             nuevo_vertice= Vertice(clave)                   #Creamos el vertice
             self.lista_vertices[clave]= nuevo_vertice       #Agrega el vertice al diccionario de vertices
             if tipo:
                 self.lista_vertices[clave].color= tipo
+            self.lista_vertices[clave].flujo = flujo
             return True                                     #Se agrego el vertice correctamente, regresa True
         else:                                               #Si el vertice existe, regresa False
             return False
@@ -653,7 +655,6 @@ class Grafica:
 
         self.restablecerVertices()
         return (grafiquita, self.peso_grafica, bosque)
-
 
     def dijkstra(self, inicio):
         assert inicio in self.lista_vertices
@@ -1202,6 +1203,218 @@ class Grafica:
             grafiquita = eliminarFuentesYsumideros(grafiquita)
 
         return grafiquita
+    
+    def simplex(self):
+        copia = self.copiar()
+        total = 0
+        i = 0
+        oferta = list()
+        demanda = list()
+        aristas_peso_minimo = list()
+        aristas_aux = list()
+        flujo = 0
+        coste = 0
+
+        for v in self.lista_vertices:
+            if self.lista_vertices[v].flujo < 0:
+                demanda.append(self.lista_vertices[v])
+            elif self.lista_vertices[v].flujo > 0:
+                oferta.append(self.lista_vertices[v])
+            total += self.lista_vertices[v].flujo
+
+        if total < 0:
+            copia.agregarVertice("aux", None, -1 * total)
+            for v in demanda:
+                copia.agregarArista("e" + str(copia.numero_aristas + 1), "aux",  v.id)
+        elif total > 0:
+            copia.agregarVertice("aux", None, -1 * total)
+            for v in oferta:
+                copia.agregarArista("e" + str(copia.numero_aristas + 1), v.id,  "aux")
+
+        for a in copia.lista_aristas:
+            copia.lista_aristas[a].costo = 0
+            if  copia.lista_aristas[a].peso_min > 0:
+                aristas_peso_minimo.append(copia.lista_aristas[a])
+
+        if aristas_peso_minimo:
+            for a in aristas_peso_minimo:
+                a.peso_actual = a.peso_min
+
+        copia.agregarVertice("aux2")
+
+        for v in copia.lista_vertices:
+            if v != "aux2":
+                delta = copia.lista_vertices[v].flujo
+                print(v , " con delta: ", delta)
+                for a in aristas_peso_minimo:
+                    if v == a.origen:
+                        delta -= a.peso_actual
+                    elif v == a.destino:
+                        delta += a.peso_actual
+                print(v , " con delta: ", delta)
+                if delta < 0:
+                    copia.agregarArista("aux" + str(i), "aux2", v, math.inf, 0, 1)
+                    copia.lista_aristas["aux" + str(i)].peso_actual = delta * -1
+                    aristas_aux.append(copia.lista_aristas["aux" + str(i)])
+                    i += 1
+                elif delta > 0:
+                    copia.agregarArista("aux" + str(i), v, "aux2", math.inf, 0, 1)
+                    copia.lista_aristas["aux" + str(i)].peso_actual = delta
+                    aristas_aux.append(copia.lista_aristas["aux" + str(i)])
+                    i += 1
+        
+        while(i != 0):
+            (copia, flujo, coste) = metodoSimplex(copia)
+            for a in aristas_aux:
+                if copia.lista_aristas[a.id].peso_actual != 0:
+                    copia.eliminarArista(a.origen, a.destino)
+                    i -= 1
+
+        print("Sali del while del metodoSimplex")
+        for a in self.lista_aristas:
+            copia.lista_aristas[a].costo = self.lista_aristas[a].costo
+            copia.costo += copia.lista_aristas[a].costo * copia.lista_aristas[a].peso_actual
+
+        (copia, flujo, coste) = metodoSimplex(copia)
+
+        while(coste > 0):
+            print("costo y flujo: ", coste, ", ", flujo)
+            #input()
+            copia.costo -= flujo * coste
+            (copia, flujo, coste) = metodoSimplex(copia)
+
+        return copia
+        
+def metodoSimplex(grafica):
+    print("Entre al metodoSimplex")
+    copia = copy.deepcopy(grafica)
+    grafiquita = Grafica()
+    aristas = list()
+    no_basicos = list()
+    ciclo = list()
+    saturadas = list()
+    arista_coste = None
+    flujo = math.inf
+    coste = 0
+
+    for a in grafica.lista_aristas:
+        if grafica.lista_aristas[a].peso == grafica.lista_aristas[a].peso_actual:
+            saturadas.append(grafica.lista_aristas[a])
+        #    print("Por saturacion")
+       #     print(copia.lista_aristas[a])
+            copia.eliminarArista(grafica.lista_aristas[a].origen, grafica.lista_aristas[a].destino)
+        elif (grafica.lista_aristas[a].peso_actual - grafica.lista_aristas[a].peso_min) == 0:
+            #print("Por moco")
+            #print(copia.lista_aristas[a])
+            no_basicos.append(grafica.lista_aristas[a])
+            copia.eliminarArista(grafica.lista_aristas[a].origen, grafica.lista_aristas[a].destino)
+    #print("despues")
+    #for a in copia.lista_aristas:
+     #   print(copia.lista_aristas[a])
+    for a in no_basicos:
+        flujo = math.inf
+        frontera = []
+        frontera.append(copia.lista_vertices[a.destino])
+        v = frontera[-1]
+        v.bandera = 1
+        #print(a.origen)
+        while len(frontera) != 0:
+            print(v.id)
+            cont = 0
+            for vertice in copia.lista_vertices[v.id].lista_salientes:
+                print("S: ", vertice)
+                if (copia.lista_vertices[vertice] in frontera):
+                    cont += 1
+                    continue
+                if (copia.lista_vertices[vertice].bandera == 0):
+                    break
+                cont += 1
+        
+            for vertice in copia.lista_vertices[v.id].lista_entrantes:
+                print("E: ", vertice)
+                if copia.lista_vertices[vertice] in frontera:
+                    cont += 1
+                    continue
+                if (copia.lista_vertices[vertice].bandera == 0):
+                    break
+                cont += 1
+            print(cont)
+            print("suma: ", len(copia.lista_vertices[v.id].lista_salientes) + len(copia.lista_vertices[v.id].lista_entrantes))
+
+            if cont == (len(copia.lista_vertices[v.id].lista_salientes) + len(copia.lista_vertices[v.id].lista_entrantes)):
+                for v in frontera:
+                    print("f1 : ", v)
+                #print(frontera[-1].id)
+                
+                v.bandera = 1
+                #print (v.id, ": ",v.bandera)
+                v = frontera[-1]
+                #print (v.id, ": ",v.bandera)
+                frontera = frontera[:-1]
+                for v in frontera:
+                    print("f2 : ", v)
+                aristas = aristas[:-1]
+
+            termino = False
+            for vertices in copia.lista_vertices[v.id].lista_salientes:
+                #print (v.id, ": ",v.bandera)
+                if (copia.lista_vertices[vertice] not in frontera) and (copia.lista_vertices[vertice].bandera == 0):
+                    auxrista = grafica.buscarArista(v.id , vertices)
+                    aristas.append(auxrista)
+                    frontera.append(v)
+                    v = copia.lista_vertices[vertices]
+                    termino = True
+                    break
+            
+            if termino == False:
+                print("Entonce el vertice: ", v,id)
+                for vertices in copia.lista_vertices[v.id].lista_entrantes:
+                    print("entrantes f: ", vertices)
+                    if (copia.lista_vertices[vertice] not in frontera) and (copia.lista_vertices[vertice].bandera == 0):
+                        auxrista = grafica.buscarArista(vertices, v.id)
+                        aristas.append(auxrista)
+                        frontera.append(v)
+                        v = copia.lista_vertices[vertices]
+                        break
+            if v.id == a.origen:
+                print("fin")
+                break
+
+        copia.restablecerVertices()
+        coste = 0
+        #print("AAAAAAAAAAAAAAa")
+        #for v in frontera:
+         #   print(v)
+
+        for i in range(len(frontera)-1):
+            v = frontera[i]
+            v2 = frontera[i + 1]
+            aurista = copia.buscarArista(v.id, v2.id)
+            aux = aristas[i]
+            if aurista == aux:
+                flujo = min(flujo, aux.peso - aux.peso_actual)
+                coste -= aux.costo
+            else:
+                flujo = min(flujo, aux.peso_actual - aux.peso_min)
+                coste += aux.costo
+
+        flujo = min(flujo, a.peso - a.peso_actual)
+        if coste > 0:
+            aristas.append(a)
+            for i in range(len(frontera)-1):
+                v = frontera[i]
+                v2 = frontera[i + 1]
+                aurista = grafica.buscarArista(v.id, v2.id)
+                aux = aristas[i]
+                if aurista == aux:
+                    aux.peso_actual += flujo
+                else:
+                    aux.peso_actual -= flujo
+            a.peso_actual += flujo
+            break
+    
+    return (grafica, flujo, coste)
+
 
 def dijkstraPeso(grafica, inicio):
     assert inicio in grafica.lista_vertices
@@ -1322,6 +1535,7 @@ def dijkstraGeneralPeso(grafica, inicio):
      #   print(v)
 
     return (grafiquita, 0, 1)
+
 def fordFulkerson(grafiquita, maximo = math.inf):
     cola = list()
     fuente = None
