@@ -575,23 +575,25 @@ def graficaArchivo(grafica):
                 grafica.agregarArista("e"+str(i), arista[0], arista[1])
         i+= 1
 
-    grafica.lista_vertices["a"].flujo = 5
-    grafica.lista_vertices["b"].flujo = 0
-    grafica.lista_vertices["c"].flujo = 3
-    grafica.lista_vertices["d"].flujo = -8
+    grafica.lista_vertices["a"].flujo = 4
+    grafica.lista_vertices["b"].flujo = 2
+    grafica.lista_vertices["c"].flujo = -1
+    grafica.lista_vertices["d"].flujo = -5
 
     a =grafica.buscarArista("a", "b")
-    grafica.lista_aristas[a.id].costo = 1
-    a =grafica.buscarArista("a", "c")
-    grafica.lista_aristas[a.id].costo = 4
-    a =grafica.buscarArista("b", "d")
     grafica.lista_aristas[a.id].costo = 2
-    a =grafica.buscarArista("c", "b")
+    a =grafica.buscarArista("a", "c")
+    grafica.lista_aristas[a.id].costo = -5
+    a =grafica.buscarArista("b", "d")
+    grafica.lista_aristas[a.id].costo = 4
+    a =grafica.buscarArista("b", "c")
     grafica.lista_aristas[a.id].costo = -1
-    grafica.lista_aristas[a.id].peso_min = 1
-    a =grafica.buscarArista("c", "d")
+    a =grafica.buscarArista("c", "b")
     grafica.lista_aristas[a.id].costo = 6
-    grafica.lista_aristas[a.id].peso_min = 1
+    a =grafica.buscarArista("c", "d")
+    grafica.lista_aristas[a.id].costo = 3
+    a =grafica.buscarArista("d", "a")
+    grafica.lista_aristas[a.id].costo = 7
     #a =grafica.buscarArista("c", "d")
     #grafica.lista_aristas[a.id].costo = 8
     #a =grafica.buscarArista("c", "f")
