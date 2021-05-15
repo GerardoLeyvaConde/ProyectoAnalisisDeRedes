@@ -250,8 +250,19 @@ class Grafica:
 
     @return: La copia de la grafica.
     """
-    def copiar(self):
-        return copy.deepcopy(self)
+    def copiar(self, grafica=None):
+        if grafica:
+            self.vaciarGrafica()
+            self.lista_vertices = copy.deepcopy(grafica.lista_vertices)
+            self.lista_aristas = copy.deepcopy(grafica.lista_aristas)
+            self.dirigida = copy.deepcopy(grafica.dirigida)
+            self.costo = copy.deepcopy(grafica.costo)
+            self.numero_aristas= copy.deepcopy(grafica.numero_aristas)
+            self.numero_vertices= copy.deepcopy(grafica.numero_vertices)
+            self.peso_grafica= copy.deepcopy(grafica.peso_grafica)
+            return
+        else:
+            return copy.deepcopy(self)
 
     """
     Función para eliminar un vertice de la grafica.
@@ -1263,32 +1274,45 @@ class Grafica:
                     aristas_aux.append(copia.lista_aristas["aux" + str(i)])
                     i += 1
         
-        while(i != 0):
+        while True:
             (copia, flujo, coste) = metodoSimplex(copia)
-            for a in aristas_aux:
-                if copia.lista_aristas[a.id].peso_actual != 0:
-                    copia.eliminarArista(a.origen, a.destino)
-                    i -= 1
+            
+            eliminar = []
+
+            for arista in aristas_aux:
+                if copia.lista_aristas[arista.id].peso_actual != 0:
+                    copia.eliminarArista(arista.origen, arista.destino)
+                    eliminar.append(arista)
+
+            #aristas_aux -= eliminar
+            for e in eliminar:
+                aristas_aux.remove(e)
+
+            if (len(copia.lista_vertices["aux2"].lista_entrantes) + len(copia.lista_vertices["aux2"].lista_salientes)) == 0:
+                copia.eliminarVertice("aux2")
+                break
 
         print("Sali del while del metodoSimplex")
         for a in self.lista_aristas:
             copia.lista_aristas[a].costo = self.lista_aristas[a].costo
             copia.costo += copia.lista_aristas[a].costo * copia.lista_aristas[a].peso_actual
 
+        for a in copia.lista_aristas:
+            print(copia.lista_aristas[a])
+
         (copia, flujo, coste) = metodoSimplex(copia)
 
         while(coste > 0):
             print("costo y flujo: ", coste, ", ", flujo)
             #input()
-            copia.costo -= flujo * coste
+            copia.costo -= (flujo * coste)
             (copia, flujo, coste) = metodoSimplex(copia)
 
         return copia
         
 def metodoSimplex(grafica):
-    print("Entre al metodoSimplex")
-    copia = copy.deepcopy(grafica)
-    grafiquita = Grafica()
+    copia = Grafica()
+    copia.copiar(grafica)
     aristas = list()
     no_basicos = list()
     ciclo = list()
@@ -1300,27 +1324,23 @@ def metodoSimplex(grafica):
     for a in grafica.lista_aristas:
         if grafica.lista_aristas[a].peso == grafica.lista_aristas[a].peso_actual:
             saturadas.append(grafica.lista_aristas[a])
-        #    print("Por saturacion")
-       #     print(copia.lista_aristas[a])
             copia.eliminarArista(grafica.lista_aristas[a].origen, grafica.lista_aristas[a].destino)
         elif (grafica.lista_aristas[a].peso_actual - grafica.lista_aristas[a].peso_min) == 0:
-            #print("Por moco")
-            #print(copia.lista_aristas[a])
             no_basicos.append(grafica.lista_aristas[a])
             copia.eliminarArista(grafica.lista_aristas[a].origen, grafica.lista_aristas[a].destino)
-    #print("despues")
-    #for a in copia.lista_aristas:
-     #   print(copia.lista_aristas[a])
+
     for a in no_basicos:
         flujo = math.inf
         frontera = []
-        frontera.append(copia.lista_vertices[a.destino])
-        v = frontera[-1]
+        aristas = []
+        v = copia.lista_vertices[a.destino]
         v.bandera = 1
-        #print(a.origen)
-        while len(frontera) != 0:
-            print(v.id)
+        while True:
+            print("---------------------------------------------------\n", v.id)
             cont = 0
+            for vex in frontera:
+                print("F: ", vex.id)
+            print("///////////////////////////////////////////7")
             for vertice in copia.lista_vertices[v.id].lista_salientes:
                 print("S: ", vertice)
                 if (copia.lista_vertices[vertice] in frontera):
@@ -1338,27 +1358,17 @@ def metodoSimplex(grafica):
                 if (copia.lista_vertices[vertice].bandera == 0):
                     break
                 cont += 1
-            print(cont)
-            print("suma: ", len(copia.lista_vertices[v.id].lista_salientes) + len(copia.lista_vertices[v.id].lista_entrantes))
 
             if cont == (len(copia.lista_vertices[v.id].lista_salientes) + len(copia.lista_vertices[v.id].lista_entrantes)):
-                for v in frontera:
-                    print("f1 : ", v)
-                #print(frontera[-1].id)
-                
-                v.bandera = 1
-                #print (v.id, ": ",v.bandera)
-                v = frontera[-1]
-                #print (v.id, ": ",v.bandera)
-                frontera = frontera[:-1]
-                for v in frontera:
-                    print("f2 : ", v)
-                aristas = aristas[:-1]
+                if cont != 0 and (len(copia.lista_vertices[v.id].lista_salientes) + len(copia.lista_vertices[v.id].lista_entrantes)) != 0:
+                    v.bandera = 1
+                    v = frontera[-1]
+                    frontera = frontera[:-1]
+                    aristas = aristas[:-1]
 
             termino = False
             for vertices in copia.lista_vertices[v.id].lista_salientes:
-                #print (v.id, ": ",v.bandera)
-                if (copia.lista_vertices[vertice] not in frontera) and (copia.lista_vertices[vertice].bandera == 0):
+                if (copia.lista_vertices[vertices] not in frontera) and (copia.lista_vertices[vertices].bandera == 0):
                     auxrista = grafica.buscarArista(v.id , vertices)
                     aristas.append(auxrista)
                     frontera.append(v)
@@ -1367,50 +1377,60 @@ def metodoSimplex(grafica):
                     break
             
             if termino == False:
-                print("Entonce el vertice: ", v,id)
                 for vertices in copia.lista_vertices[v.id].lista_entrantes:
-                    print("entrantes f: ", vertices)
-                    if (copia.lista_vertices[vertice] not in frontera) and (copia.lista_vertices[vertice].bandera == 0):
+                    if (copia.lista_vertices[vertices] not in frontera) and (copia.lista_vertices[vertices].bandera == 0):
                         auxrista = grafica.buscarArista(vertices, v.id)
                         aristas.append(auxrista)
                         frontera.append(v)
                         v = copia.lista_vertices[vertices]
                         break
             if v.id == a.origen:
-                print("fin")
+                frontera.append(v)
+                break
+            if len(frontera) == 0:
                 break
 
         copia.restablecerVertices()
         coste = 0
-        #print("AAAAAAAAAAAAAAa")
-        #for v in frontera:
-         #   print(v)
 
         for i in range(len(frontera)-1):
-            v = frontera[i]
+            v1 = frontera[i]
             v2 = frontera[i + 1]
-            aurista = copia.buscarArista(v.id, v2.id)
+            aurista = copia.buscarArista(v1.id, v2.id)
             aux = aristas[i]
-            if aurista == aux:
-                flujo = min(flujo, aux.peso - aux.peso_actual)
-                coste -= aux.costo
+            print("au: ", aurista)
+            print("aux: ", aux, " peso: ", aux.costo)
+            if aurista != None:
+                if aurista.id == aux.id:
+                    flujo = min(flujo, aux.peso - aux.peso_actual)
+                    coste -= aux.costo
+                    print("coste restado", coste)
+                else:
+                    flujo = min(flujo, aux.peso_actual - aux.peso_min)
+                    coste += aux.costo
+                    print("coste sumado", coste)
             else:
                 flujo = min(flujo, aux.peso_actual - aux.peso_min)
                 coste += aux.costo
-
+                print("coste sumado", coste)
+        print("costea: ", a.costo)
+        coste += a.costo
         flujo = min(flujo, a.peso - a.peso_actual)
+        print("Coste: ", coste)
+        print("Flujo: ", flujo)
         if coste > 0:
             aristas.append(a)
             for i in range(len(frontera)-1):
-                v = frontera[i]
+                v1 = frontera[i]
                 v2 = frontera[i + 1]
-                aurista = grafica.buscarArista(v.id, v2.id)
+                aurista = grafica.buscarArista(v1.id, v2.id)
                 aux = aristas[i]
                 if aurista == aux:
-                    aux.peso_actual += flujo
+                    grafica.lista_aristas[aux.id].peso_actual += flujo
                 else:
-                    aux.peso_actual -= flujo
+                    grafica.lista_aristas[aux.id].peso_actual -= flujo
             a.peso_actual += flujo
+            print("Coste: ", coste)
             break
     
     return (grafica, flujo, coste)
